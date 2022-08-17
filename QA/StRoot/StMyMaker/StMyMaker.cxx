@@ -558,35 +558,6 @@ const Int_t StMyMaker::MakeTrack(const Int_t it){
 }
 
 //-----------------------------------------------------------------------------
-const Int_t StMyMaker::MakeEpdHit(const Int_t it){
-	mEpdHit = (const StPicoEpdHit*)mPicoDst->epdHit(it);
-	if(!mEpdHit){
-		LOG_WARN << "Error opening picoDst EpdHit! Skip!" << endm;
-		return kStWarn;
-	}
-
-	if(mEpdGeom->IsEast(mEpdHit->id()))
-		mNEpdHitsEast ++;
-	if(mEpdGeom->IsWest(mEpdHit->id()))
-		mNEpdHitsWest ++;
-	
-	if(!mEpdHit->isGood())
-		return kStOK;
-
-	mSumNMip += mEpdHit->nMIP();
-	mSumTNMip += mEpdHit->TnMIP(2., 0.3);
-
-	const TVector3 StraightLine = mEpdGeom->TileCenter(mEpdHit->id())-mEvent->primaryVertex();
-	const Double_t Weight = mEpdHit->TnMIP(2., 0.3);
-	mQ1xEpd += StraightLine.Eta()*Weight*TMath::Cos(StraightLine.Phi());
-	mQ1yEpd += StraightLine.Eta()*Weight*TMath::Sin(StraightLine.Phi());
-	mQ2xEpd += Weight*TMath::Cos(2.*StraightLine.Phi());
-	mQ2yEpd += Weight*TMath::Sin(2.*StraightLine.Phi());
-
-	return kStOK;
-}
-
-//-----------------------------------------------------------------------------
 const Double_t StMyMaker::getBTofBeta(const UChar_t iCase) const{
 	if(!mTrack->isTofTrack() || !mBTofPidTraits || mBTofPidTraits->btofMatchFlag()<=0)
 		return 0.;
