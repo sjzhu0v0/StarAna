@@ -1,8 +1,11 @@
 #include "TString.h"
 #include "TStopwatch.h"
 #include "TSystem.h"
+#include "TChain.h"
 
 #include "StChain/StChain.h"
+
+#include "StMyMaker.cxx"
 
 #include "iostream"
 
@@ -59,7 +62,7 @@ void readPicoDst(const Char_t* const inputFile = "test.list", const Char_t* cons
 	gSystem->Load("StMyMaker");
 	
 	StChain* const chain = new StChain();
-	StPicoDstMaker* const picoDstMaker = new StPicoDstMaker(2, inputFile, "picoDstMaker");
+	StPicoDstMaker* const picoDstMaker = new StPicoDstMaker(StPicoDstMaker::IoRead, inputFile, "picoDstMaker");
 	StMyMaker* const myMaker = new StMyMaker("myMaker", inputFile, outputFile, picoDstMaker);
 	
 	chain->Init();

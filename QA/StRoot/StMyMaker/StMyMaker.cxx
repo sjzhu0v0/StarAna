@@ -21,6 +21,12 @@
 #include "StMyCuts.h"
 #include "StMyMaker.h"
 
+double sDcaxy_cal(TVector3 p,TVector3 dca){
+	p = p.Unit();
+	float cosl = p.Perp();
+	return -p.Y()/cosl*dca.x() + p.x()/cosl*dca.y();
+}
+
 ClassImp(StMyMaker)
 
 //-----------------------------------------------------------------------------
@@ -55,13 +61,8 @@ Int_t StMyMaker::Init(){
 	hrefmult3 = new TH1F("hrefmult3", ";RefMult3;#it{N}_{events}", 1000, -0.5, 999.5);
 	hrefmult4 = new TH1F("hrefmult4", ";RefMult4;#it{N}_{events}", 1000, -0.5, 999.5);
 	hgrefmult = new TH1F("hgrefmult", ";gRefMult;#it{N}_{events}", 1000, -0.5, 999.5);
-	hfxtmult = new TH1F("hfxtmult", ";FxtMult;#it{N}_{events}", 1000, -0.5, 999.5);
-	hfxtmult3 = new TH1F("hfxtmult3", ";FxtMult3;#it{N}_{events}", 1000, -0.5, 999.5);
-	hfxtmult4 = new TH1F("hfxtmult4", ";FxtMult4;#it{N}_{events}", 1000, -0.5, 999.5);
 	hbtofmatchmult = new TH1F("hbtofmatchmult", ";bTofMatchMult;#it{N}_{events}", 1000, -0.5, 999.5);
 	hbtoftraymult = new TH1F("hbtoftraymult", ";bTofTrayMult;#it{N}_{events}", 1000, -0.5, 1999.5);
-	hetofhitmult = new TH1F("hetofhitmult", ";eTofHitMult;#it{N}_{events}", 1000, -0.5, 999.5);
-	hetofdigimult = new TH1F("hetofdigimult", ";eTofDigiMult;#it{N}_{events}", 1000, -0.5, 1999.5);
 	hsumnmip = new TH1F("hsumnmip", ";#SigmanMIP;#it{N}_{events}", 1000, 0., 4000.);
 	hsumtnmip = new TH1F("hsumtnmip", ";#Sigmatruncated nMIP;#it{N}_{events}", 1000, 0., 2000.);
 	hnptracks = new TH1F("hnptracks", ";nPositiveTracks;#it{N}_{events}", 1000, -0.5, 999.5);
@@ -89,13 +90,8 @@ Int_t StMyMaker::Init(){
 	prefmult3 = new TProfile("prefmult3", ";run index;<RefMult3>", nRunIndices, -0.5, nRunIndices-0.5);
 	prefmult4 = new TProfile("prefmult4", ";run index;<RefMult4>", nRunIndices, -0.5, nRunIndices-0.5);
 	pgrefmult = new TProfile("pgrefmult", ";run index;<gRefMult>", nRunIndices, -0.5, nRunIndices-0.5);
-	pfxtmult = new TProfile("pfxtmult", ";run index;<FxtMult>", nRunIndices, -0.5, nRunIndices-0.5);
-	pfxtmult3 = new TProfile("pfxtmult3", ";run index;<FxtMult3>", nRunIndices, -0.5, nRunIndices-0.5);
-	pfxtmult4 = new TProfile("pfxtmult4", ";run index;<FxtMult4>", nRunIndices, -0.5, nRunIndices-0.5);
 	pbtofmatchmult = new TProfile("pbtofmatchmult", ";run index;<bTofMatchMult>", nRunIndices, -0.5, nRunIndices-0.5);
 	pbtoftraymult = new TProfile("pbtoftraymult", ";run index;<bTofTrayMult>", nRunIndices, -0.5, nRunIndices-0.5);
-	petofhitmult = new TProfile("petofhitmult", ";run index;<eTofHitMult>", nRunIndices, -0.5, nRunIndices-0.5);
-	petofdigimult = new TProfile("petofdigimult", ";run index;<eTofDigiMult>", nRunIndices, -0.5, nRunIndices-0.5);
 	psumnmip = new TProfile("psumnmip", ";run index;<#SigmanMIP>", nRunIndices, -0.5, nRunIndices-0.5);
 	psumtnmip = new TProfile("psumtnmip", ";run index;<#Sigmatruncated nMIP>", nRunIndices, -0.5, nRunIndices-0.5);
 	pnptracks = new TProfile("pnptracks", ";run index;<nPositiveTracks>", nRunIndices, -0.5, nRunIndices-0.5);
@@ -135,12 +131,6 @@ Int_t StMyMaker::Init(){
 	hpqbtof1obetare = new TH2F("hpqbtof1obetare", ";#it{p}#it{q} (GeV/#it{c});bTOF 1/#it{#beta} (recalculation)", 200, -10., 10., 200, 0.7, 2.7);
 	hpqbtofm2 = new TH2F("hpqbtofm2", ";#it{p}#it{q} (GeV/#it{c});bTOF #it{m}^{2} (GeV^{2}/#it{c}^{4})", 200, -10., 10., 250, -0.2, 2.3);
 	hpqbtofm2re = new TH2F("hpqbtofm2re", ";#it{p}#it{q} (GeV/#it{c});bTOF #it{m}^{2} (recalculation) (GeV^{2}/#it{c}^{4})", 200, -10., 10., 250, -0.2, 2.3);
-	hetofdeltaxy = new TH2F("hetofdeltaxy", ";eTofDeltaX (cm);eTofDeltaY (cm)", 120, -6., 6., 240, -12., 12.);
-	hetof1obetacheck = new TH2F("hetof1obetacheck", ";eTOF 1/#it{#beta};eTOF 1/#it{#beta} (recalculation)", 200, 0.7, 2.7, 200, 0.7, 2.7);
-	hpqetof1obeta = new TH2F("hpqetof1obeta", ";#it{p}#it{q} (GeV/#it{c});eTOF 1/#it{#beta}", 200, -10., 10., 200, 0.7, 2.7);
-	hpqetof1obetare = new TH2F("hpqetof1obetare", ";#it{p}#it{q} (GeV/#it{c});eTOF 1/#it{#beta} (recalculation)", 200, -10., 10., 200, 0.7, 2.7);
-	hpqetofm2 = new TH2F("hpqetofm2", ";#it{p}#it{q} (GeV/#it{c});eTOF #it{m}^{2} (GeV^{2}/#it{c}^{4})", 200, -10., 10., 250, -0.2, 2.3);
-	hpqetofm2re = new TH2F("hpqetofm2re", ";#it{p}#it{q} (GeV/#it{c});eTOF #it{m}^{2} (recalculation) (GeV^{2}/#it{c}^{4})", 200, -10., 10., 250, -0.2, 2.3);
 
 	pdca = new TProfile("pdca", ";run index;<Dca>", nRunIndices, -0.5, nRunIndices-0.5);
 	pdcaxy = new TProfile("pdcaxy", ";run index;<Dca_{#it{xy}}>", nRunIndices, -0.5, nRunIndices-0.5);
@@ -158,9 +148,6 @@ Int_t StMyMaker::Init(){
 	pbtof1obeta = new TProfile("pbtof1obeta", ";run index;<bTOF 1/#it{#beta}>", nRunIndices, -0.5, nRunIndices-0.5);
 	pbtofylocal = new TProfile("pbtofylocal", ";run index;<bTofYLocal>", nRunIndices, -0.5, nRunIndices-0.5);
 	pbtofzlocal = new TProfile("pbtofzlocal", ";run index;<bTofZLocal>", nRunIndices, -0.5, nRunIndices-0.5);
-	petof1obeta = new TProfile("petof1obeta", ";run index;<eTOF 1/#it{#beta}>", nRunIndices, -0.5, nRunIndices-0.5);
-	petofdeltax = new TProfile("petofdeltax", ";run index;<eTofDeltaX>", nRunIndices, -0.5, nRunIndices-0.5);
-	petofdeltay = new TProfile("petofdeltay", ";run index;<eTofDeltaY>", nRunIndices, -0.5, nRunIndices-0.5);
 	
 	return kStOK;
 }
@@ -184,13 +171,8 @@ Int_t StMyMaker::Finish(){
 	hrefmult3->Write();
 	hrefmult4->Write();
 	hgrefmult->Write();
-	hfxtmult->Write();
-	hfxtmult3->Write();
-	hfxtmult4->Write();
 	hbtofmatchmult->Write();
 	hbtoftraymult->Write();
-	hetofhitmult->Write();
-	hetofdigimult->Write();
 	hsumnmip->Write();
 	hsumtnmip->Write();
 	hnptracks->Write();
@@ -218,13 +200,8 @@ Int_t StMyMaker::Finish(){
 	prefmult3->Write();
 	prefmult4->Write();
 	pgrefmult->Write();
-	pfxtmult->Write();
-	pfxtmult3->Write();
-	pfxtmult4->Write();
 	pbtofmatchmult->Write();
 	pbtoftraymult->Write();
-	petofhitmult->Write();
-	petofdigimult->Write();
 	psumnmip->Write();
 	psumtnmip->Write();
 	pnptracks->Write();
@@ -264,12 +241,6 @@ Int_t StMyMaker::Finish(){
 	hpqbtof1obetare->Write();
 	hpqbtofm2->Write();
 	hpqbtofm2re->Write();
-	hetofdeltaxy->Write();
-	hetof1obetacheck->Write();
-	hpqetof1obeta->Write();
-	hpqetof1obetare->Write();
-	hpqetofm2->Write();
-	hpqetofm2re->Write();
 
 	pdca->Write();
 	pdcaxy->Write();
@@ -287,9 +258,6 @@ Int_t StMyMaker::Finish(){
 	pbtof1obeta->Write();
 	pbtofylocal->Write();
 	pbtofzlocal->Write();
-	petof1obeta->Write();
-	petofdeltax->Write();
-	petofdeltay->Write();
 
 	mOutFile->Close();
 
@@ -302,7 +270,6 @@ void StMyMaker::Clear(Option_t* option){
 	mEvent         = nullptr;
 	mTrack         = nullptr;
 	mBTofPidTraits = nullptr;
-	mETofPidTraits = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -337,7 +304,7 @@ const Int_t StMyMaker::MakeEvent(){
 		return kStOK;
 
 	mRunIndex = StMyCuts::RunIdIndex.at(mEvent->runId());
-	const TVector3 PrimaryVertex = mEvent->primaryVertex();
+	const TVector3 PrimaryVertex(mEvent->primaryVertex().x(),mEvent->primaryVertex().y(),mEvent->primaryVertex().z());
 
 	hnevents->Fill(1.);
 	hvxvy->Fill(PrimaryVertex.X(), PrimaryVertex.Y());
@@ -352,11 +319,8 @@ const Int_t StMyMaker::MakeEvent(){
 	hrefmult3->Fill(mEvent->refMult3());
 	hrefmult4->Fill(mEvent->refMult4());
 	hgrefmult->Fill(mEvent->grefMult());
-	hfxtmult->Fill(mEvent->fxtMult());
 	hbtofmatchmult->Fill(mEvent->nBTOFMatch());
 	hbtoftraymult->Fill(mEvent->btofTrayMultiplicity());
-	hetofhitmult->Fill(mEvent->etofHitMultiplicity());
-	hetofdigimult->Fill(mEvent->etofDigiMultiplicity());
 
 	pvx->Fill(mRunIndex, PrimaryVertex.X());
 	pvy->Fill(mRunIndex, PrimaryVertex.Y());
@@ -372,20 +336,15 @@ const Int_t StMyMaker::MakeEvent(){
 	prefmult3->Fill(mRunIndex, mEvent->refMult3());
 	prefmult4->Fill(mRunIndex, mEvent->refMult4());
 	pgrefmult->Fill(mRunIndex, mEvent->grefMult());
-	pfxtmult->Fill(mRunIndex, mEvent->fxtMult());
 	pbtofmatchmult->Fill(mRunIndex, mEvent->nBTOFMatch());
 	pbtoftraymult->Fill(mRunIndex, mEvent->btofTrayMultiplicity());
-	petofhitmult->Fill(mRunIndex, mEvent->etofHitMultiplicity());
-	petofdigimult->Fill(mRunIndex, mEvent->etofDigiMultiplicity());
 
-	mFxtMult3 = mFxtMult4 = mNPTracks = mNNTracks = mNElectronP = mNElectronM = mNPionP = mNPionM = mNKaonP = mNKaonM = mNProtonP = mNProtonM = 0;
+	mNPTracks = mNNTracks = mNElectronP = mNElectronM = mNPionP = mNPionM = mNKaonP = mNKaonM = mNProtonP = mNProtonM = 0;
 	mQ1xTpc = mQ1yTpc = mQ2xTpc = mQ2yTpc = 0.;
 	const Int_t nTracks = mPicoDst->numberOfTracks();
 	for(Int_t it=0; it<nTracks; it++)
 		MakeTrack(it);
 	
-	hfxtmult3->Fill(mFxtMult3);
-	hfxtmult4->Fill(mFxtMult4);
 	hnptracks->Fill(mNPTracks);
 	hnntracks->Fill(mNNTracks);
 	hnelectronp->Fill(mNElectronP);
@@ -397,8 +356,6 @@ const Int_t StMyMaker::MakeEvent(){
 	hnprotonp->Fill(mNProtonP);
 	hnprotonm->Fill(mNProtonM);
 
-	pfxtmult3->Fill(mRunIndex, mFxtMult3);
-	pfxtmult4->Fill(mRunIndex, mFxtMult4);
 	pnptracks->Fill(mRunIndex, mNPTracks);
 	pnntracks->Fill(mRunIndex, mNNTracks);
 	pnelectronp->Fill(mRunIndex, mNElectronP);
@@ -430,20 +387,14 @@ const Int_t StMyMaker::MakeTrack(const Int_t it){
 		LOG_WARN << "Error opening picoDst Track! Skip!" << endm;
 		return kStWarn;
 	}
-	mBTofPidTraits = mTrack->isTofTrack()?(const StPicoBTofPidTraits*)mPicoDst->btofPidTraits(mTrack->bTofPidTraitsIndex()):nullptr;
-	mETofPidTraits = mTrack->isETofTrack()?(const StPicoETofPidTraits*)mPicoDst->etofPidTraits(mTrack->eTofPidTraitsIndex()):nullptr;
-
-	if(mTrack->isPrimary() && mTrack->nHitsFit()>10 && mTrack->nSigmaProton()<-3.)
-		mFxtMult3 ++;
-	if(mTrack->isPrimary() && mTrack->nHitsFit()>10 && TMath::Abs(mTrack->nSigmaKaon())>3.)
-		mFxtMult4 ++;
+	mBTofPidTraits = mTrack->bTofPidTraitsIndex() !=-1 ?(const StPicoBTofPidTraits*)mPicoDst->btofPidTraits(mTrack->bTofPidTraitsIndex()):nullptr;
 
 	if(!isGoodTrack())
 		return kStOK;
 	
-	const TVector3 Dca = mTrack->gDCA(mEvent->primaryVertex());
-	const Double_t SDcaXY = mTrack->gDCAs(mEvent->primaryVertex());
-	const TVector3 PMom = mTrack->pMom();
+	const TVector3 Dca(mTrack->dcaPoint().xyz());
+	const TVector3 PMom (mTrack->pMom().xyz());
+	const Double_t SDcaXY = sDcaxy_cal(PMom,Dca);
 	const Double_t PPt = PMom.Pt();
 	const Double_t PPhi= PMom.Phi();
 	const Double_t PEta = PMom.Eta();
@@ -453,18 +404,14 @@ const Int_t StMyMaker::MakeTrack(const Int_t it){
 	const Double_t BTofBetaRe = getBTofBeta(2);
 	const Double_t BTofM2 = BTofBeta<1.e-5?-999.:PP2*(TMath::Power(BTofBeta, -2.)-1.);
 	const Double_t BTofM2Re = BTofBetaRe<1.e-5?-999.:PP2*(TMath::Power(BTofBetaRe, -2.)-1.);
-	const Double_t ETofBeta = getETofBeta(0);
-	const Double_t ETofBetaRe = getETofBeta(2);
-	const Double_t ETofM2 = ETofBeta<1.e-5?-999.:PP2*(TMath::Power(ETofBeta, -2.)-1.);
-	const Double_t ETofM2Re = ETofBetaRe<1.e-5?-999.:PP2*(TMath::Power(ETofBetaRe, -2.)-1.);
 	
 	hdca->Fill(Dca.Mag());
 	hdcaxy->Fill(Dca.Pt());
 	hdcaphi->Fill(Dca.Phi());
 	hdcaz->Fill(Dca.Z());
-	hsdcaxy->Fill(mTrack->gDCAs(mEvent->primaryVertex()));
+	hsdcaxy->Fill(Dca.Perp());
 	hnhitsfit->Fill(mTrack->nHitsFit());
-	hnhitsratio->Fill((const Double_t)mTrack->nHitsFit()/mTrack->nHitsPoss());
+	hnhitsratio->Fill((const Double_t)mTrack->nHitsFit()/mTrack->nHitsMax());
 	hnhitsdedx->Fill(mTrack->nHitsDedx());
 	hpt->Fill(PPt);
 	hphi->Fill(PPhi);
@@ -474,7 +421,7 @@ const Int_t StMyMaker::MakeTrack(const Int_t it){
 	hpqnsigmapion->Fill(PPQ, mTrack->nSigmaPion());
 	hpqnsigmakaon->Fill(PPQ, mTrack->nSigmaKaon());
 	hpqnsigmaproton->Fill(PPQ, mTrack->nSigmaProton());
-	if(mTrack->isTofTrack() && mBTofPidTraits && mBTofPidTraits->btofMatchFlag()>0){
+	if(mTrack->bTofPidTraitsIndex() !=-1 && mBTofPidTraits && mBTofPidTraits->btofMatchFlag()>0){
 		hbtofyzlocal->Fill(mBTofPidTraits->btofYLocal(), mBTofPidTraits->btofZLocal());
 		hbtof1obetacheck->Fill(1./BTofBeta, 1./BTofBetaRe);
 	}
@@ -486,18 +433,6 @@ const Int_t StMyMaker::MakeTrack(const Int_t it){
 		hpqbtof1obetare->Fill(PPQ, 1./BTofBetaRe);
 		hpqbtofm2re->Fill(PPQ, BTofM2Re);
 	}
-	if(mTrack->isETofTrack() && mETofPidTraits && mETofPidTraits->matchFlag()>0){
-		hetofdeltaxy->Fill(mETofPidTraits->deltaX(), mETofPidTraits->deltaY());
-		hetof1obetacheck->Fill(1./ETofBeta, 1./ETofBetaRe);
-	}
-	if(!(ETofBeta<1.e-5)){
-		hpqetof1obeta->Fill(PPQ, 1./ETofBeta);
-		hpqetofm2->Fill(PPQ, ETofM2);
-	}
-	if(!(ETofBetaRe<1.e-5)){
-		hpqetof1obetare->Fill(PPQ, 1./ETofBetaRe);
-		hpqetofm2re->Fill(PPQ, ETofM2Re);
-	}
 
 	pdca->Fill(mRunIndex, Dca.Mag());
 	pdcaxy->Fill(mRunIndex, Dca.Pt());
@@ -506,7 +441,7 @@ const Int_t StMyMaker::MakeTrack(const Int_t it){
 	psdcaxy->Fill(mRunIndex, SDcaXY);
 	psdcaxy2->Fill(mRunIndex, TMath::Power(SDcaXY, 2.));
 	pnhitsfit->Fill(mRunIndex, mTrack->nHitsFit());
-	pnhitsratio->Fill(mRunIndex, (const Double_t)mTrack->nHitsFit()/mTrack->nHitsPoss());
+	pnhitsratio->Fill(mRunIndex, (const Double_t)mTrack->nHitsFit()/mTrack->nHitsMax());
 	pnhitsdedx->Fill(mRunIndex, mTrack->nHitsDedx());
 	ppt->Fill(mRunIndex, PPt);
 	pphi->Fill(mRunIndex, PPhi);
@@ -516,11 +451,6 @@ const Int_t StMyMaker::MakeTrack(const Int_t it){
 		pbtof1obeta->Fill(mRunIndex, 1./BTofBeta);
 		pbtofylocal->Fill(mRunIndex, mBTofPidTraits->btofYLocal());
 		pbtofzlocal->Fill(mRunIndex, mBTofPidTraits->btofZLocal());
-	}
-	if(!(ETofBeta<1.e-5)){
-		petof1obeta->Fill(mRunIndex, 1./ETofBeta);
-		petofdeltax->Fill(mRunIndex, mETofPidTraits->deltaX());
-		petofdeltay->Fill(mRunIndex, mETofPidTraits->deltaY());
 	}
 
 	if(mTrack->charge()>0){
@@ -559,32 +489,17 @@ const Int_t StMyMaker::MakeTrack(const Int_t it){
 
 //-----------------------------------------------------------------------------
 const Double_t StMyMaker::getBTofBeta(const UChar_t iCase) const{
-	if(!mTrack->isTofTrack() || !mBTofPidTraits || mBTofPidTraits->btofMatchFlag()<=0)
+	if(mTrack->bTofPidTraitsIndex()==-1 || !mBTofPidTraits || mBTofPidTraits->btofMatchFlag()<=0)
 		return 0.;
 	Double_t BTofBeta = mBTofPidTraits->btofBeta();
 	if(iCase==0)
 		return BTofBeta<1.e-5?0.:BTofBeta;
 	if(iCase==1 && !(BTofBeta<1.e-5))
 		return BTofBeta;
-	const TVector3 Origin = mTrack->origin();
-	const TVector3 BTofHitPos = mBTofPidTraits->btofHitPos();
+	const TVector3 Origin(mTrack->dcaPoint().xyz());
+	const TVector3 BTofHitPos(mBTofPidTraits->btofHitPos().xyz());
 	BTofBeta = tofPathLength(new StThreeVector<Double_t>(Origin.X(), Origin.Y(), Origin.Z()), new StThreeVector<Double_t>(BTofHitPos.X(), BTofHitPos.Y(), BTofHitPos.Z()), mTrack->helix(mEvent->bField()).curvature())/(mBTofPidTraits->btof()*C_C_LIGHT/1.e9);
 	return BTofBeta<1.e-5?0.:BTofBeta;
-}
-
-//-----------------------------------------------------------------------------
-const Double_t StMyMaker::getETofBeta(const UChar_t iCase) const{
-	if(!mTrack->isETofTrack() || !mETofPidTraits || mETofPidTraits->matchFlag()<=0)
-		return 0.;
-	Double_t ETofBeta = mETofPidTraits->beta();
-	if(iCase==0)
-		return ETofBeta<1.e-5?0.:ETofBeta;
-	if(iCase==1 && !(ETofBeta<1.e-5))
-		return ETofBeta;
-	const TVector3 Origin = mTrack->origin();
-	const TVector3 ETofCrossingPos = mETofPidTraits->crossingPos();
-	ETofBeta = tofPathLength(new StThreeVector<Double_t>(Origin.X(), Origin.Y(), Origin.Z()), new StThreeVector<Double_t>(ETofCrossingPos.X(), ETofCrossingPos.Y(), ETofCrossingPos.Z()), mTrack->helix(mEvent->bField()).curvature())/(mETofPidTraits->tof()*C_C_LIGHT/1.e9);
-	return ETofBeta<1.e-5?0.:ETofBeta;
 }
 
 //-----------------------------------------------------------------------------
@@ -597,9 +512,9 @@ const Bool_t StMyMaker::isGoodTrigger() const{
 
 //-----------------------------------------------------------------------------
 const Bool_t StMyMaker::isGoodEvent() const{
-	const Double_t Vx = mEvent->primaryVertex().X();
-	const Double_t Vy = mEvent->primaryVertex().Y();
-	const Double_t Vz = mEvent->primaryVertex().Z();
+	const Double_t Vx = mEvent->primaryVertex().x();
+	const Double_t Vy = mEvent->primaryVertex().y();
+	const Double_t Vz = mEvent->primaryVertex().z();
 	if(TMath::Abs(Vx)<1.e-5 && TMath::Abs(Vy)<1.e-5 && TMath::Abs(Vz)<1.e-5)
 		return kFALSE;
 	if(Vz<=StMyCuts::VzCut[0] || Vz>=StMyCuts::VzCut[1])
@@ -613,11 +528,11 @@ const Bool_t StMyMaker::isGoodEvent() const{
 const Bool_t StMyMaker::isGoodTrack() const{
 	if(!mTrack->isPrimary())
 		return kFALSE;
-	if(mTrack->gDCA(mEvent->primaryVertex()).Mag()>=StMyCuts::DcaCut)
+	if(mTrack->dcaPoint().mag()>=StMyCuts::DcaCut)
 		return kFALSE;
 	if(mTrack->nHitsFit()<=StMyCuts::NHitsFitCut)
 		return kFALSE;
-	if((const Double_t)mTrack->nHitsFit()/mTrack->nHitsPoss()<=StMyCuts::NHitsRatioCut)
+	if((const Double_t)mTrack->nHitsFit()/mTrack->nHitsMax()<=StMyCuts::NHitsRatioCut)
 		return kFALSE;
 	if(mTrack->nHitsDedx()<=StMyCuts::NHitsDedxCut)
 		return kFALSE;
@@ -651,3 +566,4 @@ const Bool_t StMyMaker::isProton() const{
 		return kFALSE;
 	return kTRUE;
 }
+

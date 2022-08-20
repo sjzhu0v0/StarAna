@@ -35,7 +35,6 @@ class StMyMaker : public StMaker{
 	const Int_t    MakeEvent();
 	const Int_t    MakeTrack(const Int_t it);
 	const Double_t getBTofBeta(const UChar_t iCase = 0) const;
-	const Double_t getETofBeta(const UChar_t iCase = 0) const;
 	const Bool_t   isGoodTrigger() const;
 	const Bool_t   isGoodEvent() const;
 	const Bool_t   isGoodTrack() const;
@@ -53,11 +52,8 @@ class StMyMaker : public StMaker{
 	const StPicoEvent*         mEvent;
 	const StPicoTrack*         mTrack;
 	const StPicoBTofPidTraits* mBTofPidTraits;
-	const StPicoETofPidTraits* mETofPidTraits;
 
 	Int_t    mRunIndex;
-	Int_t    mFxtMult3;
-	Int_t    mFxtMult4;
 	Double_t mSumNMip;
 	Double_t mSumTNMip;
 	Int_t    mNPTracks;
@@ -89,13 +85,8 @@ class StMyMaker : public StMaker{
 	TH1F* hrefmult3;
 	TH1F* hrefmult4;
 	TH1F* hgrefmult;
-	TH1F* hfxtmult;
-	TH1F* hfxtmult3;
-	TH1F* hfxtmult4;
 	TH1F* hbtofmatchmult;
 	TH1F* hbtoftraymult;
-	TH1F* hetofhitmult;
-	TH1F* hetofdigimult;
 	TH1F* hsumnmip;
 	TH1F* hsumtnmip;
 	TH1F* hnptracks;
@@ -123,13 +114,8 @@ class StMyMaker : public StMaker{
 	TProfile* prefmult3;
 	TProfile* prefmult4;
 	TProfile* pgrefmult;
-	TProfile* pfxtmult;
-	TProfile* pfxtmult3;
-	TProfile* pfxtmult4;
 	TProfile* pbtofmatchmult;
 	TProfile* pbtoftraymult;
-	TProfile* petofhitmult;
-	TProfile* petofdigimult;
 	TProfile* psumnmip;
 	TProfile* psumtnmip;
 	TProfile* pnptracks;
@@ -170,12 +156,6 @@ class StMyMaker : public StMaker{
 	TH2F* hpqbtof1obetare;
 	TH2F* hpqbtofm2;
 	TH2F* hpqbtofm2re;
-	TH2F* hetofdeltaxy;
-	TH2F* hetof1obetacheck;
-	TH2F* hpqetof1obeta;
-	TH2F* hpqetof1obetare;
-	TH2F* hpqetofm2;
-	TH2F* hpqetofm2re;
 
 	TProfile* pdca;
 	TProfile* pdcaxy;
@@ -193,9 +173,6 @@ class StMyMaker : public StMaker{
 	TProfile* pbtof1obeta;
 	TProfile* pbtofylocal;
 	TProfile* pbtofzlocal;
-	TProfile* petof1obeta;
-	TProfile* petofdeltax;
-	TProfile* petofdeltay;
 	
 	ClassDef(StMyMaker, 1)
 };
