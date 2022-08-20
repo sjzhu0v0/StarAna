@@ -19,7 +19,7 @@ void readPicoDst(const Char_t* const inputFile = "test.list", const Char_t* cons
 	TStopwatch* const stopWatch = new TStopwatch();
 	stopWatch->Start();
 	
-	const TString SL_version = "SL21d";
+	const TString SL_version = "SL8b";
 	const TString env_SL = gSystem->Getenv("STAR");
 	if(!env_SL.Contains(SL_version)){
 		cout << "Environment Star Library does not match the requested library in readPicoDst.C. Exiting..." << endl;
