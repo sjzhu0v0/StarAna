@@ -55,7 +55,6 @@ void readPicoDst(const Char_t* const inputFile = "test.list", const Char_t* cons
 	gSystem->Load("StMtdMatchMaker");
 	gSystem->Load("StBTofUtil");
 	gSystem->Load("St_db_Maker");
-	gSystem->Load("StRefMultCorr");
 	gSystem->Load("StPicoEvent");
 	gSystem->Load("StPicoDstMaker");
 	
