@@ -54,7 +54,6 @@ Int_t StMyMaker::Init(){
 	hvzvzvpd = new TH2F("hvzvzvpd", ";#it{V}_{#it{z}} (cm);#it{V}_{#it{z}}^{VPD} (cm)", 80, 196., 204., 80, 196., 204.);
 	hnvpdhitseast = new TH1F("hnvpdhitseast", ";nVpdHitsEast;#it{N}_{events}", 50, -0.5, 49.5);
 	hnvpdhitswest = new TH1F("hnvpdhitswest", ";nVpdHitsWest;#it{N}_{events}", 50, -0.5, 49.5);
-	hbbcx = new TH1F("hbbcx", ";BBCx (Hz);#it{N}_{events}", 1000, -0.5, 99999.5);
 	hzdcx = new TH1F("hzdcx", ";ZDCx (Hz);#it{N}_{events}", 1000, -0.5, 999.5);
 	hrefmult = new TH1F("hrefmult", ";RefMult;#it{N}_{events}", 1000, -0.5, 999.5);
 	hrefmult2 = new TH1F("hrefmult2", ";RefMult2;#it{N}_{events}", 1000, -0.5, 999.5);
@@ -83,7 +82,6 @@ Int_t StMyMaker::Init(){
 	pvzmvzvpd = new TProfile("pvzmvzvpd", ";run index;<#it{V}_{#it{z}}#minus#it{V}_{#it{z}}^{VPD}>", nRunIndices, -0.5, nRunIndices-0.5);
 	pnvpdhitseast = new TProfile("pnvpdhitseast", ";run index;<nVpdHitsEast>", nRunIndices, -0.5, nRunIndices-0.5);
 	pnvpdhitswest = new TProfile("pnvpdhitswest", ";run index;<nVpdHitsWest>", nRunIndices, -0.5, nRunIndices-0.5);
-	pbbcx = new TProfile("pbbcx", ";run index;<BBCx>", nRunIndices, -0.5, nRunIndices-0.5);
 	pzdcx = new TProfile("pzdcx", ";run index;<ZDCx>", nRunIndices, -0.5, nRunIndices-0.5);
 	prefmult = new TProfile("prefmult", ";run index;<RefMult>", nRunIndices, -0.5, nRunIndices-0.5);
 	prefmult2 = new TProfile("prefmult2", ";run index;<RefMult2>", nRunIndices, -0.5, nRunIndices-0.5);
@@ -164,7 +162,6 @@ Int_t StMyMaker::Finish(){
 	hvzvzvpd->Write();
 	hnvpdhitseast->Write();
 	hnvpdhitswest->Write();
-	hbbcx->Write();
 	hzdcx->Write();
 	hrefmult->Write();
 	hrefmult2->Write();
@@ -193,7 +190,6 @@ Int_t StMyMaker::Finish(){
 	pvzmvzvpd->Write();
 	pnvpdhitseast->Write();
 	pnvpdhitswest->Write();
-	pbbcx->Write();
 	pzdcx->Write();
 	prefmult->Write();
 	prefmult2->Write();
@@ -312,7 +308,6 @@ const Int_t StMyMaker::MakeEvent(){
 	hvzvzvpd->Fill(PrimaryVertex.Z(), mEvent->vzVpd());
 	hnvpdhitseast->Fill(mEvent->nVpdHitsEast());
 	hnvpdhitswest->Fill(mEvent->nVpdHitsWest());
-	hbbcx->Fill(mEvent->BBCx());
 	hzdcx->Fill(mEvent->ZDCx());
 	hrefmult->Fill(mEvent->refMult());
 	hrefmult2->Fill(mEvent->refMult2());
@@ -329,7 +324,6 @@ const Int_t StMyMaker::MakeEvent(){
 	pvzmvzvpd->Fill(mRunIndex, PrimaryVertex.Z()-mEvent->vzVpd());
 	pnvpdhitseast->Fill(mRunIndex, mEvent->nVpdHitsEast());
 	pnvpdhitswest->Fill(mRunIndex, mEvent->nVpdHitsWest());
-	pbbcx->Fill(mRunIndex, mEvent->BBCx());
 	pzdcx->Fill(mRunIndex, mEvent->ZDCx());
 	prefmult->Fill(mRunIndex, mEvent->refMult());
 	prefmult2->Fill(mRunIndex, mEvent->refMult2());
