@@ -78,7 +78,6 @@ class StMyMaker : public StMaker{
 	TH2F* hvzvzvpd;
 	TH1F* hnvpdhitseast;
 	TH1F* hnvpdhitswest;
-	TH1F* hbbcx;
 	TH1F* hzdcx;
 	TH1F* hrefmult;
 	TH1F* hrefmult2;
@@ -107,7 +106,6 @@ class StMyMaker : public StMaker{
 	TProfile* pvzmvzvpd;
 	TProfile* pnvpdhitseast;
 	TProfile* pnvpdhitswest;
-	TProfile* pbbcx;
 	TProfile* pzdcx;
 	TProfile* prefmult;
 	TProfile* prefmult2;
