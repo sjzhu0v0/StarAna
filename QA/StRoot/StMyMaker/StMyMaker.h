@@ -54,8 +54,6 @@ class StMyMaker : public StMaker{
 	const StPicoBTofPidTraits* mBTofPidTraits;
 
 	Int_t    mRunIndex;
-	Double_t mSumNMip;
-	Double_t mSumTNMip;
 	Int_t    mNPTracks;
 	Int_t    mNNTracks;
 	Int_t    mNElectronP;
@@ -86,8 +84,6 @@ class StMyMaker : public StMaker{
 	TH1F* hgrefmult;
 	TH1F* hbtofmatchmult;
 	TH1F* hbtoftraymult;
-	TH1F* hsumnmip;
-	TH1F* hsumtnmip;
 	TH1F* hnptracks;
 	TH1F* hnntracks;
 	TH1F* hnelectronp;
@@ -114,8 +110,6 @@ class StMyMaker : public StMaker{
 	TProfile* pgrefmult;
 	TProfile* pbtofmatchmult;
 	TProfile* pbtoftraymult;
-	TProfile* psumnmip;
-	TProfile* psumtnmip;
 	TProfile* pnptracks;
 	TProfile* pnntracks;
 	TProfile* pnelectronp;

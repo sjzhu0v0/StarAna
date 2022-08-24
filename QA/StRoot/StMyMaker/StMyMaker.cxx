@@ -53,55 +53,49 @@ Int_t StMyMaker::Init() {
 
   hnevents = new TH1D("hnevents", "", 2, -0.5, 1.5);
   hvxvy = new TH2F("hvxvy", ";#it{V}_{#it{x}} (cm);#it{V}_{#it{y}} (cm)", 100,
-                   -5., 5., 100, -5., 5.);
-  hvz =
-      new TH1F("hvz", ";#it{V}_{#it{z}} (cm);#it{N}_{events}", 80, 196., 204.);
+                   -3., 3., 100, -2., 2.);
+  hvz = new TH1F("hvz", ";#it{V}_{#it{z}} (cm);#it{N}_{events}", 80, -100, 100);
   hvzvzvpd =
       new TH2F("hvzvzvpd", ";#it{V}_{#it{z}} (cm);#it{V}_{#it{z}}^{VPD} (cm)",
-               80, 196., 204., 80, 196., 204.);
-  hnvpdhitseast = new TH1F("hnvpdhitseast", ";nVpdHitsEast;#it{N}_{events}", 50,
-                           -0.5, 49.5);
-  hnvpdhitswest = new TH1F("hnvpdhitswest", ";nVpdHitsWest;#it{N}_{events}", 50,
-                           -0.5, 49.5);
-  hzdcx = new TH1F("hzdcx", ";ZDCx (Hz);#it{N}_{events}", 1000, -0.5, 999.5);
-  hrefmult =
-      new TH1F("hrefmult", ";RefMult;#it{N}_{events}", 1000, -0.5, 999.5);
+               80, -100., 100., 80, -100., 100.);
+  hnvpdhitseast = new TH1F("hnvpdhitseast", ";nVpdHitsEast;#it{N}_{events}", 20,
+                           -0.5, 19.5);
+  hnvpdhitswest = new TH1F("hnvpdhitswest", ";nVpdHitsWest;#it{N}_{events}", 20,
+                           -0.5, 19.5);
+  hzdcx = new TH1F("hzdcx", ";ZDCx (Hz);#it{N}_{events}", 2000, 5999.5, 7999.5);
+  hrefmult = new TH1F("hrefmult", ";RefMult;#it{N}_{events}", 80, -0.5, 79.5);
   hrefmult2 =
-      new TH1F("hrefmult2", ";RefMult2;#it{N}_{events}", 1000, -0.5, 999.5);
+      new TH1F("hrefmult2", ";RefMult2;#it{N}_{events}", 80, -0.5, 79.5);
   hrefmult3 =
-      new TH1F("hrefmult3", ";RefMult3;#it{N}_{events}", 1000, -0.5, 999.5);
+      new TH1F("hrefmult3", ";RefMult3;#it{N}_{events}", 80, -0.5, 79.5);
   hrefmult4 =
-      new TH1F("hrefmult4", ";RefMult4;#it{N}_{events}", 1000, -0.5, 999.5);
+      new TH1F("hrefmult4", ";RefMult4;#it{N}_{events}", 80, -0.5, 79.5);
   hgrefmult =
-      new TH1F("hgrefmult", ";gRefMult;#it{N}_{events}", 1000, -0.5, 999.5);
+      new TH1F("hgrefmult", ";gRefMult;#it{N}_{events}", 80, -0.5, 79.5);
   hbtofmatchmult = new TH1F("hbtofmatchmult", ";bTofMatchMult;#it{N}_{events}",
-                            1000, -0.5, 999.5);
+                            80, -0.5, 79.5);
   hbtoftraymult = new TH1F("hbtoftraymult", ";bTofTrayMult;#it{N}_{events}",
-                           1000, -0.5, 1999.5);
-  hsumnmip =
-      new TH1F("hsumnmip", ";#SigmanMIP;#it{N}_{events}", 1000, 0., 4000.);
-  hsumtnmip = new TH1F("hsumtnmip", ";#Sigmatruncated nMIP;#it{N}_{events}",
-                       1000, 0., 2000.);
-  hnptracks = new TH1F("hnptracks", ";nPositiveTracks;#it{N}_{events}", 1000,
-                       -0.5, 999.5);
-  hnntracks = new TH1F("hnntracks", ";nNegativeTracks;#it{N}_{events}", 1000,
-                       -0.5, 999.5);
-  hnelectronp = new TH1F("hnelectronp", ";#it{n} e^{#plus};#it{N}_{events}",
-                         500, -0.5, 499.5);
+                           200, -0.5, 199.5);
+  hnptracks =
+      new TH1F("hnptracks", ";nPositiveTracks;#it{N}_{events}", 80, -0.5, 79.5);
+  hnntracks =
+      new TH1F("hnntracks", ";nNegativeTracks;#it{N}_{events}", 80, -0.5, 79.5);
+  hnelectronp = new TH1F("hnelectronp", ";#it{n} e^{#plus};#it{N}_{events}", 40,
+                         -0.5, 39.5);
   hnelectronm = new TH1F("hnelectronm", ";#it{n} e^{#minus};#it{N}_{events}",
-                         500, -0.5, 499.5);
-  hnpionp = new TH1F("hnpionp", ";#it{n} #pi^{#plus};#it{N}_{events}", 1000,
-                     -0.5, 999.5);
-  hnpionm = new TH1F("hnpionm", ";#it{n} #pi^{#minus};#it{N}_{events}", 1000,
-                     -0.5, 999.5);
-  hnkaonp = new TH1F("hnkaonp", ";#it{n} K^{#plus};#it{N}_{events}", 500, -0.5,
-                     499.5);
-  hnkaonm = new TH1F("hnkaonm", ";#it{n} K^{#minus};#it{N}_{events}", 500, -0.5,
-                     499.5);
-  hnprotonp = new TH1F("hnprotonp", ";#it{n} p^{#plus};#it{N}_{events}", 500,
-                       -0.5, 499.5);
-  hnprotonm = new TH1F("hnprotonm", ";#it{n} p^{#minus};#it{N}_{events}", 500,
-                       -0.5, 499.5);
+                         40, -0.5, 39.5);
+  hnpionp = new TH1F("hnpionp", ";#it{n} #pi^{#plus};#it{N}_{events}", 80, -0.5,
+                     79.5);
+  hnpionm = new TH1F("hnpionm", ";#it{n} #pi^{#minus};#it{N}_{events}", 80,
+                     -0.5, 79.5);
+  hnkaonp =
+      new TH1F("hnkaonp", ";#it{n} K^{#plus};#it{N}_{events}", 40, -0.5, 39.5);
+  hnkaonm =
+      new TH1F("hnkaonm", ";#it{n} K^{#minus};#it{N}_{events}", 40, -0.5, 39.5);
+  hnprotonp = new TH1F("hnprotonp", ";#it{n} p^{#plus};#it{N}_{events}", 40,
+                       -0.5, 39.5);
+  hnprotonm = new TH1F("hnprotonm", ";#it{n} p^{#minus};#it{N}_{events}", 40,
+                       -0.5, 39.5);
 
   pvx = new TProfile("pvx", ";run index;<#it{V}_{#it{x}}>", nRunIndices, -0.5,
                      nRunIndices - 0.5);
@@ -134,10 +128,6 @@ Int_t StMyMaker::Init() {
                                 nRunIndices, -0.5, nRunIndices - 0.5);
   pbtoftraymult = new TProfile("pbtoftraymult", ";run index;<bTofTrayMult>",
                                nRunIndices, -0.5, nRunIndices - 0.5);
-  psumnmip = new TProfile("psumnmip", ";run index;<#SigmanMIP>", nRunIndices,
-                          -0.5, nRunIndices - 0.5);
-  psumtnmip = new TProfile("psumtnmip", ";run index;<#Sigmatruncated nMIP>",
-                           nRunIndices, -0.5, nRunIndices - 0.5);
   pnptracks = new TProfile("pnptracks", ";run index;<nPositiveTracks>",
                            nRunIndices, -0.5, nRunIndices - 0.5);
   pnntracks = new TProfile("pnntracks", ";run index;<nNegativeTracks>",
@@ -281,8 +271,6 @@ Int_t StMyMaker::Finish() {
   hgrefmult->Write();
   hbtofmatchmult->Write();
   hbtoftraymult->Write();
-  hsumnmip->Write();
-  hsumtnmip->Write();
   hnptracks->Write();
   hnntracks->Write();
   hnelectronp->Write();
@@ -309,8 +297,6 @@ Int_t StMyMaker::Finish() {
   pgrefmult->Write();
   pbtofmatchmult->Write();
   pbtoftraymult->Write();
-  psumnmip->Write();
-  psumtnmip->Write();
   pnptracks->Write();
   pnntracks->Write();
   pnelectronp->Write();
@@ -481,12 +467,6 @@ const Int_t StMyMaker::MakeEvent() {
   pq1ytpc->Fill(mRunIndex, mQ1yTpc);
   pq2xtpc->Fill(mRunIndex, mQ2xTpc);
   pq2ytpc->Fill(mRunIndex, mQ2yTpc);
-
-  hsumnmip->Fill(mSumNMip);
-  hsumtnmip->Fill(mSumTNMip);
-
-  psumnmip->Fill(mRunIndex, mSumNMip);
-  psumtnmip->Fill(mRunIndex, mSumTNMip);
 
   return kStOK;
 }
