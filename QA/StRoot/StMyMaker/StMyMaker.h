@@ -10,7 +10,7 @@
 #include "StChain/StMaker.h"
 #include "StPicoDstMaker/StPicoDstMaker.h"
 #include "StPicoEvent/StPicoBTofPidTraits.h"
-#include "StPicoDstMaker/StPicoDst.h"
+#include "StPicoEvent/StPicoDst.h"
 #include "StPicoEvent/StPicoEvent.h"
 #include "StPicoEvent/StPicoTrack.h"
 
