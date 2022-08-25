@@ -85,7 +85,7 @@ void readPicoDst(const Char_t *const inputFile = "test.list",
       char time_str[100] = {0};
       strftime(ch, sizeof(ch) - 1, "%Y%m%d--%H%M%S", localtime(&t));
       sprintf(time_str, "%s", ch);
-			cout << time_str << endl;
+      cout << time_str << endl;
     }
     chain->Clear();
     chain->Make();

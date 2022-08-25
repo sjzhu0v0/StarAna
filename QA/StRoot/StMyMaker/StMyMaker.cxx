@@ -21,14 +21,7 @@
 #include "StMyCuts.h"
 #include "StMyMaker.h"
 
-double sDcaxy_cal(TVector3 p, TVector3 dca) {
-  p = p.Unit();
-  float cosl = p.Perp();
-  return -p.Y() / cosl * dca.x() + p.x() / cosl * dca.y();
-}
-
 ClassImp(StMyMaker)
-
     //-----------------------------------------------------------------------------
     StMyMaker::StMyMaker(const Char_t *const name, const Char_t *const inName,
                          const Char_t *const outName,
@@ -41,6 +34,13 @@ ClassImp(StMyMaker)
 
 //-----------------------------------------------------------------------------
 StMyMaker::~StMyMaker() {}
+
+//-----------------------------------------------------------------------------
+const double StMyMaker::sDcaxy_cal(TVector3 p, TVector3 dca) {
+  p = p.Unit();
+  float cosl = p.Perp();
+  return -p.Y() / cosl * dca.x() + p.x() / cosl * dca.y();
+}
 
 //-----------------------------------------------------------------------------
 Int_t StMyMaker::Init() {
@@ -505,7 +505,7 @@ const Int_t StMyMaker::MakeTrack(const Int_t it) {
   hdcaxy->Fill(Dca.Pt());
   hdcaphi->Fill(Dca.Phi());
   hdcaz->Fill(Dca.Z());
-  hsdcaxy->Fill(Dca.Perp());
+  hsdcaxy->Fill(sDcaxy_cal(PMom, Dca));
   hnhitsfit->Fill(mTrack->nHitsFit());
   hnhitsratio->Fill((const Double_t)mTrack->nHitsFit() / mTrack->nHitsMax());
   hnhitsdedx->Fill(mTrack->nHitsDedx());
