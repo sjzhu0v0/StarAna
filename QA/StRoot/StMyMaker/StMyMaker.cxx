@@ -62,7 +62,7 @@ Int_t StMyMaker::Init() {
                            -0.5, 19.5);
   hnvpdhitswest = new TH1F("hnvpdhitswest", ";nVpdHitsWest;#it{N}_{events}", 20,
                            -0.5, 19.5);
-  hzdcx = new TH1F("hzdcx", ";ZDCx (Hz);#it{N}_{events}", 2000, 5999.5, 7999.5);
+  hzdcx = new TH1F("hzdcx", ";ZDCx (Hz);#it{N}_{events}", 4000, 5999.5, 9999.5);
   hrefmult = new TH1F("hrefmult", ";RefMult;#it{N}_{events}", 80, -0.5, 79.5);
   hrefmult2 =
       new TH1F("hrefmult2", ";RefMult2;#it{N}_{events}", 80, -0.5, 79.5);
@@ -175,7 +175,7 @@ Int_t StMyMaker::Init() {
       new TH1F("hpt", ";#it{p}_{T} (GeV/#it{c});#it{N}_{tracks}", 500, 0., 10.);
   hphi = new TH1F("hphi", ";#it{#varphi};#it{N}_{tracks}", 360, -TMath::Pi(),
                   TMath::Pi());
-  heta = new TH1F("heta", ";#it{#eta};#it{N}_{tracks}", 300, -3., 0.);
+  heta = new TH1F("heta", ";#it{#eta};#it{N}_{tracks}", 600, -3., 3.);
   hpqdedx =
       new TH2F("hpqdedx", ";#it{p}#it{q} (GeV/#it{c});d#it{E}/d#it{x} (keV/cm)",
                200, -10., 10., 200, 0., 20.);
