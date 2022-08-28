@@ -31,4 +31,3 @@ PID_Def::PID_Def(const PID_Def &pid_def) {
 
 PID_Def::~PID_Def() {}
 
-PID_Def PID_Def::ReturnPIDDef() { return *this; }

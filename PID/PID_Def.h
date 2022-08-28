@@ -12,12 +12,17 @@
 #include "TTree.h"
 #include "TLegend.h"
 #include "TCanvas.h"
+#include "TString.h"
 #include "TGraphErrors.h"
 
 #include "iostream"
 #include "string"
 
 using namespace std;
+
+namespace PID_FCN{
+  double func1();
+};
 
 class PID_Def {
 public:
@@ -29,7 +34,6 @@ public:
 
   virtual ~PID_Def();
 
-  PID_Def ReturnPIDDef();
   virtual void GetRawHistogram(TString name) = 0;
   virtual void ShowRawHistogram() = 0;
   virtual void InitializeHistogram(int n_bin, double edge_low,double edge_high) = 0;
