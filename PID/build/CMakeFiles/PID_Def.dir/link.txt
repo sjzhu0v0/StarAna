@@ -1,2 +1,0 @@
-/usr/bin/ar qc libPID_Def.a  CMakeFiles/PID_Def.dir/PID_Def.C.o CMakeFiles/PID_Def.dir/PID_Det.C.o
-/usr/bin/ranlib libPID_Def.a

@@ -1,7 +1,7 @@
 #include "PID_Det.h"
 
 PID_Det::PID_Det(IO_TYPE io_type, TFile *file_input, TFile *file_output,
-                 double (*fcn)(const double *, const double *))
+                 double (*fcn)(double *, double *))
     : PID_Def(io_type, file_input, file_output), mfcn(fcn) {
   if ((io_type == READ && mfcn != nullptr) ||
       (io_type == WRITE && mfcn == nullptr))
@@ -29,7 +29,7 @@ PID_Det::PID_Det(IO_TYPE io_type, const PID_Def *pid_def)
 }
 
 PID_Det::PID_Det(IO_TYPE io_type, const PID_Def *pid_def,
-                 double (*fcn)(const double *, const double *))
+                 double (*fcn)(double *, double *))
     : PID_Def(*pid_def), mfcn(fcn) {
   if ((io_type == READ && mfcn == nullptr) ||
       (io_type == WRITE && mfcn != nullptr))
@@ -55,6 +55,7 @@ void PID_Det::ShowRawHistogram() {
   } else {
     TCanvas *c_Det_raw = new TCanvas("c_Det_raw", "c_Det_raw", 900, 900);
     c_Det_raw->cd();
+    gPad->SetLogz();
     mh2_raw->Draw("colz");
   }
 }
@@ -71,10 +72,7 @@ void PID_Det::InitializeHistogram(int n_bin, double edge_low,
   InitializeHistogram();
 }
 
-void PID_Det::InitializeHistogram(int n_bin, double binning[]) {
-  if (sizeof(binning) / sizeof(binning[0]) - 1 != n_bin)
-    cerr << "Number of binning doesn't mathch n_bin." << endl;
-
+void PID_Det::InitializeHistogram(int n_bin, double* binning) {
   mbinning_pid = binning;
 
   mn_binning_pid = n_bin;
@@ -105,15 +103,13 @@ void PID_Det::InitializeHistogram() {
 }
 
 void PID_Det::ShowPIDHistogram() {
-  TCanvas *c_pid = new TCanvas("c_pid", "c_pid", 1000, 900);
+  TCanvas *c_pid = new TCanvas("c_Det_PID", "c_Det_PID", 1000, 900);
   int temp = sqrt(mn_binning_pid);
   c_pid->Divide(temp + 1, temp);
-  for (int i = 1; i <= mn_binning_pid; i++) {
-    c_pid->cd(i);
+  for (int i = 0; i < mn_binning_pid; i++) {
+    c_pid->cd(i+1);
     mv_h1_pid[i]->Draw();
   }
 }
 
-void PID_Det::HistogramFitting(){
-
-}
+void PID_Det::HistogramFitting() {}

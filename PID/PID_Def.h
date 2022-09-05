@@ -11,6 +11,7 @@
 #include "TString.h"
 #include "TTree.h"
 #include "TLegend.h"
+#include "TMath.h"
 #include "TCanvas.h"
 #include "TString.h"
 #include "TGraphErrors.h"
@@ -21,7 +22,7 @@
 using namespace std;
 
 namespace PID_FCN{
-  double func1();
+  double four_gaus(double *x,double *p);
 };
 
 class PID_Def {
@@ -38,9 +39,7 @@ public:
   virtual void ShowRawHistogram() = 0;
   virtual void InitializeHistogram(int n_bin, double edge_low,double edge_high) = 0;
   virtual void InitializeHistogram(int n_bin, double* binning) = 0;
-  virtual void InitializeTree(TString name) = 0;
-  virtual void FillHistogram(double x, double weight = 1) = 0;
-  virtual void ShowHistogram() = 0;
+  virtual void ShowPIDHistogram() = 0;
 
   virtual void HistogramFitting() = 0;
 

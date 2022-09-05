@@ -1,5 +1,9 @@
 #include "PID_Def.h"
 
+double PID_FCN::four_gaus(double* x, double *p){
+  return p[0]*TMath::Gaus(x[0],p[1],p[2])+p[3]*TMath::Gaus(x[0],p[4],p[5])+p[6]*TMath::Gaus(x[0],p[7],p[8])+p[9]*TMath::Gaus(x[0],p[10],p[11]);
+}
+
 PID_Def::PID_Def(IO_TYPE io_type, TFile *file_input, TFile *file_output)
     : mfile_input(file_input), mfile_output(file_output), mio_type(io_type) {
   if (mio_type == WRITE)
