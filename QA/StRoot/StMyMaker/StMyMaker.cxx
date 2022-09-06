@@ -249,13 +249,11 @@ Int_t StMyMaker::Init() {
   pbtofzlocal = new TProfile("pbtofzlocal", ";run index;<bTofZLocal>",
                              nRunIndices, -0.5, nRunIndices - 0.5);
 
-#ifdef MINI_TREE
   mOutTree = new TTree("TrackInfo", "TrackInfo");
   mOutTree->Branch("Mom", mMom_Minitree, "Mom[3]/F");
   mOutTree->Branch("Charge", &mCharge_Minitree, "Charge/S");
   mOutTree->Branch("nSigmaProton", &mNSigmaProton_Minitree, "nSigmaProton/F");
   mOutTree->Branch("BTofM2", &mBTofM2_Minitree_Minitree, "BTofM2/F");
-#endif
 
   return kStOK;
 }
@@ -361,9 +359,7 @@ Int_t StMyMaker::Finish() {
   pbtofylocal->Write();
   pbtofzlocal->Write();
 
-#ifdef MINI_TREE
   mOutTree->Write();
-#endif
 
   mOutFile->Close();
 
@@ -595,14 +591,12 @@ const Int_t StMyMaker::MakeTrack(const Int_t it) {
     mQ2yTpc += Weight * TMath::Sin(2. * PPhi);
   }
 
-#ifdef MINI_TREE
   mMom_Minitree[0] = PMom.Px();
   mMom_Minitree[1] = PMom.Py();
   mMom_Minitree[2] = PMom.Pz();
   mCharge_Minitree = mTrack->charge();
   mNSigmaProton_Minitree = mTrack->nSigmaProton();
   mBTofM2_Minitree_Minitree = BTofM2;
-#endif
 
   return kStOK;
 }

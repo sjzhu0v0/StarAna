@@ -14,7 +14,6 @@
 #include "StPicoEvent/StPicoEvent.h"
 #include "StPicoEvent/StPicoTrack.h"
 
-#define MINI_TREE
 
 class StMaker;
 class StPicoBTofPidTraits;
@@ -51,13 +50,11 @@ private:
   const TString mOutName;
   TFile *mOutFile;
   
-#ifdef MINI_TREE
   TTree *mOutTree;
   float_t mMom_Minitree[3];
   float_t mCharge_Minitree;
   float_t mNSigmaProton_Minitree;
   float_t mBTofM2_Minitree_Minitree;
-#endif
 
   StPicoDstMaker *const mPicoDstMaker;
   const StPicoDst *mPicoDst;
