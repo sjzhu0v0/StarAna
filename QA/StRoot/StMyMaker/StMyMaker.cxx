@@ -598,6 +598,7 @@ const Int_t StMyMaker::MakeTrack(const Int_t it) {
   mCharge_Minitree = mTrack->charge();
   mNSigmaProton_Minitree = mTrack->nSigmaProton();
   mBTofM2_Minitree_Minitree = BTofM2;
+  mOutTree->Fill();
 #endif
   return kStOK;
 }
