@@ -362,6 +362,7 @@ Int_t StMyMaker::Finish() {
 
 #ifdef MINI_TREE
   mOutTree->Write();
+  cout << mOutTree->GetEntries() << " tracks have been recorded." << endl;
 #endif
   mOutFile->Close();
 
