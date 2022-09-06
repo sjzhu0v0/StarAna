@@ -249,7 +249,7 @@ Int_t StMyMaker::Init() {
   pbtofzlocal = new TProfile("pbtofzlocal", ";run index;<bTofZLocal>",
                              nRunIndices, -0.5, nRunIndices - 0.5);
 
-#ifdef MINI_TREE  
+#ifdef MINI_TREE
   mOutTree = new TTree("TrackInfo", "TrackInfo");
   mOutTree->Branch("Mom", mMom_Minitree, "Mom[3]/D");
   mOutTree->Branch("Charge", &mCharge_Minitree, "Charge/S");
@@ -662,6 +662,9 @@ const Bool_t StMyMaker::isGoodTrack() const {
     return kFALSE;
   if (mTrack->pMom().Perp() < StMyCuts::PtCutQ[0] ||
       mTrack->pMom().Perp() > StMyCuts::PtCutQ[1])
+    return kFALSE;
+  if (mTrack->pMom().PseudoRapidity() < StMyCuts::EtaCutQ[0] ||
+      mTrack->pMom().PseudoRapidity() > StMyCuts::EtaCutQ[1]) 
     return kFALSE;
   return kTRUE;
 }
