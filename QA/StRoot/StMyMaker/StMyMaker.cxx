@@ -1,4 +1,5 @@
 #include "TFile.h"
+#include "TTree.h"
 #include "TH1.h"
 #include "TH2.h"
 #include "TMath.h"
@@ -248,6 +249,14 @@ Int_t StMyMaker::Init() {
   pbtofzlocal = new TProfile("pbtofzlocal", ";run index;<bTofZLocal>",
                              nRunIndices, -0.5, nRunIndices - 0.5);
 
+#ifdef MINI_TREE
+  mOutTree = new TTree("TrackInfo","TrackInfo");
+  mOutTree->Branch("Mom", mMom_Minitree, "Mom[3]/F");
+  mOutTree->Branch("Charge", &mCharge_Minitree, "Charge/S");
+  mOutTree->Branch("nSigmaProton", &mNSigmaProton_Minitree, "nSigmaProton/F");
+  mOutTree->Branch("BTofM2", &mBTofM2_Minitree_Minitree, "BTofM2/F");
+#endif
+
   return kStOK;
 }
 
@@ -352,6 +361,10 @@ Int_t StMyMaker::Finish() {
   pbtofylocal->Write();
   pbtofzlocal->Write();
 
+#ifdef MINI_TREE
+  mOutTree->Write();
+#endif
+
   mOutFile->Close();
 
   return kStOK;
@@ -419,10 +432,8 @@ const Int_t StMyMaker::MakeEvent() {
   pvx->Fill(mRunIndex, PrimaryVertex.X());
   pvy->Fill(mRunIndex, PrimaryVertex.Y());
   pvz->Fill(mRunIndex, PrimaryVertex.Z());
-  pvr->Fill(
-      mRunIndex,
-      TMath::Sqrt(TMath::Power(PrimaryVertex.X() - StMyCuts::VrCen[0], 2.) +
-                  TMath::Power(PrimaryVertex.Y() - StMyCuts::VrCen[1], 2.)));
+  pvr->Fill(mRunIndex, TMath::Sqrt(TMath::Power(PrimaryVertex.X(), 2.) +
+                                   TMath::Power(PrimaryVertex.Y(), 2.)));
   pvzmvzvpd->Fill(mRunIndex, PrimaryVertex.Z() - mEvent->vzVpd());
   pnvpdhitseast->Fill(mRunIndex, mEvent->nVpdHitsEast());
   pnvpdhitswest->Fill(mRunIndex, mEvent->nVpdHitsWest());
@@ -576,14 +587,22 @@ const Int_t StMyMaker::MakeTrack(const Int_t it) {
   }
 
   if ((PPt > StMyCuts::PtCutQ[0] && PPt < StMyCuts::PtCutQ[1]) &&
-      ((PEta > StMyCuts::EtaCutQ[0] && PEta < StMyCuts::EtaCutQ[1]) ||
-       (PEta > StMyCuts::EtaCutQ[2] && PEta < StMyCuts::EtaCutQ[3]))) {
+      ((PEta > StMyCuts::EtaCutQ[0] && PEta < StMyCuts::EtaCutQ[1]))) {
     const Double_t Weight = PPt < 0.2 ? 0. : TMath::Min(PPt, 2.);
     mQ1xTpc += -PEta * Weight * TMath::Cos(PPhi);
     mQ1yTpc += -PEta * Weight * TMath::Sin(PPhi);
     mQ2xTpc += Weight * TMath::Cos(2. * PPhi);
     mQ2yTpc += Weight * TMath::Sin(2. * PPhi);
   }
+
+#ifdef MINI_TREE
+  mMom_Minitree[0] = PMom.Px();
+  mMom_Minitree[1] = PMom.Py();
+  mMom_Minitree[2] = PMom.Pz();
+  mCharge_Minitree = mTrack->charge();
+  mNSigmaProton_Minitree = mTrack->nSigmaProton();
+  mBTofM2_Minitree_Minitree = BTofM2;
+#endif
 
   return kStOK;
 }
@@ -642,8 +661,6 @@ const Bool_t StMyMaker::isGoodTrack() const {
     return kFALSE;
   if ((const Double_t)mTrack->nHitsFit() / mTrack->nHitsMax() <=
       StMyCuts::NHitsRatioCut)
-    return kFALSE;
-  if (mTrack->nHitsDedx() <= StMyCuts::NHitsDedxCut)
     return kFALSE;
   return kTRUE;
 }

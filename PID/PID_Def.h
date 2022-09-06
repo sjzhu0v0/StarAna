@@ -15,6 +15,7 @@
 #include "TCanvas.h"
 #include "TString.h"
 #include "TGraphErrors.h"
+#include "TLatex.h"
 
 #include "iostream"
 #include "string"

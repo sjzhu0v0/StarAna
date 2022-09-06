@@ -1,6 +1,6 @@
 cd build 
 rm -rf *
 cmake ../
-make 
-cd ../
+make
+cd ..
 root -l run.cpp
