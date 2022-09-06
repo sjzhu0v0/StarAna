@@ -1,10 +1,10 @@
 #include "TFile.h"
-#include "TTree.h"
 #include "TH1.h"
 #include "TH2.h"
 #include "TMath.h"
 #include "TProfile.h"
 #include "TString.h"
+#include "TTree.h"
 #include "TVector3.h"
 #include <map>
 #include <vector>
@@ -250,7 +250,7 @@ Int_t StMyMaker::Init() {
                              nRunIndices, -0.5, nRunIndices - 0.5);
 
 #ifdef MINI_TREE
-  mOutTree = new TTree("TrackInfo","TrackInfo");
+  mOutTree = new TTree("TrackInfo", "TrackInfo");
   mOutTree->Branch("Mom", mMom_Minitree, "Mom[3]/F");
   mOutTree->Branch("Charge", &mCharge_Minitree, "Charge/S");
   mOutTree->Branch("nSigmaProton", &mNSigmaProton_Minitree, "nSigmaProton/F");
@@ -661,6 +661,9 @@ const Bool_t StMyMaker::isGoodTrack() const {
     return kFALSE;
   if ((const Double_t)mTrack->nHitsFit() / mTrack->nHitsMax() <=
       StMyCuts::NHitsRatioCut)
+    return kFALSE;
+  if (mTrack->pMom().Perp() < StMyCuts::PtCutQ[0] ||
+      mTrack->pMom().Perp() > StMyCuts::PtCutQ[1])
     return kFALSE;
   return kTRUE;
 }
