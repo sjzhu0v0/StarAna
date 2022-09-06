@@ -250,10 +250,10 @@ Int_t StMyMaker::Init() {
                              nRunIndices, -0.5, nRunIndices - 0.5);
 
   mOutTree = new TTree("TrackInfo", "TrackInfo");
-  mOutTree->Branch("Mom", mMom_Minitree, "Mom[3]/F");
+  mOutTree->Branch("Mom", mMom_Minitree, "Mom[3]/D");
   mOutTree->Branch("Charge", &mCharge_Minitree, "Charge/S");
-  mOutTree->Branch("nSigmaProton", &mNSigmaProton_Minitree, "nSigmaProton/F");
-  mOutTree->Branch("BTofM2", &mBTofM2_Minitree_Minitree, "BTofM2/F");
+  mOutTree->Branch("nSigmaProton", &mNSigmaProton_Minitree, "nSigmaProton/D");
+  mOutTree->Branch("BTofM2", &mBTofM2_Minitree_Minitree, "BTofM2/D");
 
   return kStOK;
 }

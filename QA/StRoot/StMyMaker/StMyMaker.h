@@ -57,11 +57,11 @@ private:
   const StPicoBTofPidTraits *mBTofPidTraits;
 
   TTree *mOutTree;
-  float_t mMom_Minitree[3];
-  float_t mCharge_Minitree;
-  float_t mNSigmaProton_Minitree;
-  float_t mBTofM2_Minitree_Minitree;
-  
+  Double_t mMom_Minitree[3];
+  Short_t mCharge_Minitree;
+  Double_t mNSigmaProton_Minitree;
+  Double_t mBTofM2_Minitree_Minitree;
+
   Int_t mRunIndex;
   Int_t mNPTracks;
   Int_t mNNTracks;
