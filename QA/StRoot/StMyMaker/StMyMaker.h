@@ -53,10 +53,10 @@ private:
   
 #ifdef MINI_TREE
   TTree *mOutTree;
-  float mMom_Minitree[3] = {0};
-  short mCharge_Minitree = 0;
-  float mNSigmaProton_Minitree = 0;
-  float mBTofM2_Minitree_Minitree = 0;
+  float_t mMom_Minitree[3];
+  float_t mCharge_Minitree;
+  float_t mNSigmaProton_Minitree;
+  float_t mBTofM2_Minitree_Minitree;
 #endif
 
   StPicoDstMaker *const mPicoDstMaker;
