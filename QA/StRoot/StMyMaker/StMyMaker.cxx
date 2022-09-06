@@ -360,8 +360,9 @@ Int_t StMyMaker::Finish() {
   pbtofylocal->Write();
   pbtofzlocal->Write();
 
+#ifdef MINI_TREE
   mOutTree->Write();
-
+#endif
   mOutFile->Close();
 
   return kStOK;
