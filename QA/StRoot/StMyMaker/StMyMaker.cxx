@@ -254,6 +254,8 @@ Int_t StMyMaker::Init() {
   mOutTree->Branch("Mom", mMom_Minitree, "Mom[3]/D");
   mOutTree->Branch("Charge", &mCharge_Minitree, "Charge/S");
   mOutTree->Branch("nSigmaProton", &mNSigmaProton_Minitree, "nSigmaProton/D");
+  mOutTree->Branch("nSigmaKaon", &mNSigmaKaon_Minitree, "nSigmaKaon/D");
+  mOutTree->Branch("nSigmaPion", &mNSigmaPion_Minitree, "nSigmaPion/D");
   mOutTree->Branch("BTofM2", &mBTofM2_Minitree_Minitree, "BTofM2/D");
 #endif
   return kStOK;
@@ -599,6 +601,8 @@ const Int_t StMyMaker::MakeTrack(const Int_t it) {
   mMom_Minitree[2] = PMom.Pz();
   mCharge_Minitree = mTrack->charge();
   mNSigmaProton_Minitree = mTrack->nSigmaProton();
+  mNSigmaKaon_Minitree = mTrack->nSigmaKaon();
+  mNSigmaPion_Minitree = mTrack->nSigmaPion();
   mBTofM2_Minitree_Minitree = BTofM2;
   mOutTree->Fill();
 #endif

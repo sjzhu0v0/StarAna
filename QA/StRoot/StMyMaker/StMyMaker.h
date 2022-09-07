@@ -61,6 +61,8 @@ private:
   Double_t mMom_Minitree[3];
   Short_t mCharge_Minitree;
   Double_t mNSigmaProton_Minitree;
+  Double_t mNSigmaKaon_Minitree;
+  Double_t mNSigmaPion_Minitree;
   Double_t mBTofM2_Minitree_Minitree;
 #endif
   Int_t mRunIndex;
