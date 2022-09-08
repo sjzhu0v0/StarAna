@@ -51,17 +51,32 @@ void PID_Det::GetRawHistogram(TString name) {
   }
 }
 
-void PID_Det::GetRawHistogram(const TH2F &h2_template, TString tree_name,
+void PID_Det::GetRawHistogram(TH2F *h2_template, TString tree_name,
                               TString p_var_name, TString name_charge,
-                              TString tpc_var_name, TString tof_var_name,
-                              TString cut) {
+                              TString names_var[], int n_var,
+                              void fill(TH2F *, double *, double, double *)) {
+#ifdef DEBUG
+  cout << "PID_Det::GetRawHistogram" << endl;
+
+#endif
+  mNvars = n_var;
+  mPid_var = new double[mNvars];
+
   if (mio_type == WRITE) {
-    mh2_raw = new TH2F(h2_template);
-    mh2_raw->SetName("mh2_raw");
+    mh2_raw = (TH2F *)h2_template->Clone("mh2_raw");
 
     mTree_input = (TTree *)mfile_input->Get(tree_name);
     mTree_input->SetBranchAddress(p_var_name, mP3);
     mTree_input->SetBranchAddress(name_charge, &mCharge);
+
+    for (int i = 0; i < mNvars; i++) {
+      mTree_input->SetBranchAddress(names_var[i], (mPid_var + i));
+    }
+
+    for (long i = 0; i < mTree_input->GetEntries(); i++) {
+      mTree_input->GetEntry(i);
+      fill(mh2_raw, mP3, mCharge, mPid_var);
+    }
 
     if (mh2_raw == nullptr)
       cerr << "mh2_raw is ill-defined." << endl;
@@ -131,10 +146,11 @@ void PID_Det::InitializeHistogram() {
   }
 }
 
-void PID_Det::ShowPIDHistogram(int i_which_hist) {
+void PID_Det::ShowPIDHistogram(int i_which_hist, bool is_logy) {
   TCanvas *c_pid = new TCanvas("c_Det_PID", "c_Det_PID", 1000, 900);
   c_pid->cd();
-  gPad->SetLogy();
+  if (is_logy)
+    gPad->SetLogy();
   mVh1_pid[i_which_hist]->Draw();
 }
 
@@ -175,7 +191,7 @@ void PID_Det::ShowPIDHistogram() {
     gPad->SetLogy();
     mVh1_pid[mNbinning_pid / 2 + i]->Draw();
 #ifdef DEBUG
-    cout << "  " << i2plotted << "  " << mn_binning_pid / 2 + 1 + i << endl;
+    cout << "  " << i2plotted << "  " << mNbinning_pid / 2 + 1 + i << endl;
 #endif
     TLatex *latex2 =
         new TLatex(0.15, 0.8,
@@ -189,14 +205,36 @@ void PID_Det::ShowPIDHistogram() {
   }
 }
 
-void PID_Det::HistogramFitting() {
-  for (int i = 0; i < mNbinning_pid; i++) {
-    if (mVh1_pid[i]->Integral() < 1000)
-      continue;
-    cout << "================================================" << endl;
-    cout << i << " function fitting starts." << endl;
-    cout << "================================================" << endl;
-    mVh1_pid[i]->Fit(mVf1_pid[i], "L");
+void PID_Det::HistogramFitting(Option_t *option, Option_t *goption,
+                               Double_t xmin, Double_t xmax, int i_which_hist) {
+  if (i_which_hist == -1) {
+    for (int i = 0; i < mNbinning_pid; i++) {
+      if (mVh1_pid[i]->Integral() < 500)
+        continue;
+      cout << "================================================" << endl;
+      cout << i << " function fitting starts." << endl;
+      cout << "================================================" << endl;
+      mVh1_pid[i]->Fit(mVf1_pid[i], option, goption, xmin, xmax);
+    }
+  } else {
+    mVh1_pid[i_which_hist]->Fit(mVf1_pid[i_which_hist], option, goption, xmin,
+                                xmax);
+  }
+}
+
+void PID_Det::HistogramFitting(void FuncFitting(TH1D *, TF1 *),
+                               int i_which_hist) {
+  if (i_which_hist == -1) {
+    for (int i = 0; i < mNbinning_pid; i++) {
+      if (mVh1_pid[i]->Integral() < 500)
+        continue;
+      cout << "================================================" << endl;
+      cout << i << " function fitting starts." << endl;
+      cout << "================================================" << endl;
+      FuncFitting(mVh1_pid[i], mVf1_pid[i]);
+    }
+  } else {
+    FuncFitting(mVh1_pid[i_which_hist], mVf1_pid[i_which_hist]);
   }
 }
 

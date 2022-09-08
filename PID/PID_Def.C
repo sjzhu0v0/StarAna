@@ -1,5 +1,9 @@
 #include "PID_Def.h"
 
+double PID_FCN::gaus(double *x, double *p) {
+  return p[0] * TMath::Gaus(x[0], p[1], p[2]);
+}
+
 double PID_FCN::four_gaus(double *x, double *p) {
   return p[0] * TMath::Gaus(x[0], p[1], p[2]) +
          p[3] * TMath::Gaus(x[0], p[4], p[5]) +

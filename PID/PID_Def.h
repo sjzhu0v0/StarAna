@@ -15,6 +15,7 @@
 #include "TMath.h"
 #include "TString.h"
 #include "TTree.h"
+#include "TVector3.h"
 
 #include "iostream"
 #include "string"
@@ -22,6 +23,7 @@
 using namespace std;
 
 namespace PID_FCN {
+double gaus(double *x, double *p);
 double four_gaus(double *x, double *p);
 double three_gaus(double *x, double *p);
 }; // namespace PID_FCN
@@ -43,7 +45,9 @@ public:
   virtual void InitializeHistogram(int n_bin, double *binning) = 0;
   virtual void ShowPIDHistogram() = 0;
 
-  virtual void HistogramFitting() = 0;
+  virtual void HistogramFitting(Option_t *option, Option_t *goption,
+                                Double_t xmin, Double_t xmax,
+                                int i_which_hist) = 0;
 
 protected:
   IO_TYPE mio_type = READ;
@@ -51,7 +55,7 @@ protected:
   TFile *mfile_output = nullptr;
   TTree *mTree_input = nullptr;
 
-  double *mP3;
+  double *mP3 = new double[3];
   short mCharge;
 
 private:
