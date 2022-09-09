@@ -114,16 +114,9 @@ void PID_Det::InitializeHistogram(int n_bin, double *binning) {
 }
 
 void PID_Det::InitializeHistogram() {
-  for (int i = 0; i < 4; i++) {
-    mh1_mean[i] = new TH1F(Form("mh1_mean_%d", i), Form("mh1_mean_%d", i),
-                           mNbinning_pid, mbinning_pid);
-    mh1_width[i] = new TH1F(Form("mh1_width_%d", i), Form("mh1_width_%d", i),
-                            mNbinning_pid, mbinning_pid);
-  }
-
-  // #ifdef DEBUG
+#ifdef DEBUG
   cout << "mv_binning_pid: " << mNbinning_pid << endl;
-  // #endif
+#endif
 
   for (int i = 0; i < mNbinning_pid; i++) {
     // histogram name keep two decimal places
@@ -156,7 +149,7 @@ void PID_Det::ShowPIDHistogram(int i_which_hist, bool is_logy) {
 
 void PID_Det::ShowPIDHistogram() {
   TCanvas *c_pid = new TCanvas("c_Det_PID", "c_Det_PID", 1000, 900);
-  int temp = sqrt(mNbinning_pid);
+  int temp = ceil(sqrt(mNbinning_pid));
   int n_high, n_width;
   if (temp % 2 == 0) {
     n_width = temp;
@@ -209,7 +202,7 @@ void PID_Det::HistogramFitting(Option_t *option, Option_t *goption,
                                Double_t xmin, Double_t xmax, int i_which_hist) {
   if (i_which_hist == -1) {
     for (int i = 0; i < mNbinning_pid; i++) {
-      if (mVh1_pid[i]->Integral() < 500)
+      if (mVh1_pid[i]->Integral() < 50)
         continue;
       cout << "================================================" << endl;
       cout << i << " function fitting starts." << endl;
@@ -226,7 +219,7 @@ void PID_Det::HistogramFitting(void FuncFitting(TH1D *, TF1 *),
                                int i_which_hist) {
   if (i_which_hist == -1) {
     for (int i = 0; i < mNbinning_pid; i++) {
-      if (mVh1_pid[i]->Integral() < 500)
+      if (mVh1_pid[i]->Integral() < 50)
         continue;
       cout << "================================================" << endl;
       cout << i << " function fitting starts." << endl;
@@ -255,4 +248,46 @@ void PID_Det::FittingTuning(void FuncTuning(TF1 *)) {
 
 void PID_Det::FittingTuning(int i_which_func, void FuncTuning(TF1 *)) {
   FuncTuning(mVf1_pid[i_which_func]);
+}
+
+void PID_Det::FittingResultRequest(int n_hist, int *list_pars,
+                                   TString *list_names) {
+  for (int ihist = 0; ihist < n_hist; ihist++) {
+    mVh1_fitting_result.push_back(
+        new TH1F(list_names[ihist], ";pq[GeV/c]", mNbinning_pid, mbinning_pid));
+    for (int ibin = 0; ibin < mNbinning_pid; ibin++) {
+      mVh1_fitting_result[ihist]->SetBinContent(
+          ibin, mVf1_pid[ibin]->GetParameter(list_pars[ihist]));
+    }
+  }
+}
+
+TH1F *PID_Det::GetFittingResult(int i_which_hist) {
+  return mVh1_fitting_result[i_which_hist];
+}
+
+void PID_Det::SavingResults() {
+  mfile_output->cd();
+  mh2_raw->Write();
+  for (auto ihist : mVh1_pid)
+    ihist->Write();
+  for (auto ihist : mVh1_fitting_result)
+    ihist->Write();
+  mfile_output->Close();
+}
+
+void PID_Det::ShowFittingResult(int i_which_hist) {
+  TCanvas *c_fitting_result =
+      new TCanvas("c_fitting_result", "c_fitting_result", 1000, 900);
+
+  if (i_which_hist == -1) {
+    int n_width = ceil(sqrt(mVh1_fitting_result.size()));
+    c_fitting_result->Divide(n_width + 1, n_width);
+    for (int i = 0; i < mVh1_fitting_result.size(); i++) {
+      c_fitting_result->cd(i + 1);
+      mVh1_fitting_result[i]->Draw();
+    }
+  } else {
+    mVh1_fitting_result[i_which_hist]->Draw();
+  }
 }

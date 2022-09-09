@@ -4,7 +4,7 @@
 #include "PID_Def.h"
 
 class PID_Det : public PID_Def {
-public:
+ public:
   PID_Det(IO_TYPE io_type, TFile *file_input, TFile *file_output,
           double (*fcn)(double *, double *), int npars);
   PID_Det(IO_TYPE io_type, TFile *file_input);
@@ -21,7 +21,7 @@ public:
   void InitializeHistogram(int n_bin, double edge_low, double edge_high);
   void InitializeHistogram(int n_bin, double *binning);
   void ShowPIDHistogram();
-  void ShowPIDHistogram(int i_which_hist,bool is_logy);
+  void ShowPIDHistogram(int i_which_hist, bool is_logy);
 
   void FittingParInit(double *pars);
   void FittingParInit(int i_which_fcn, double *pars);
@@ -29,10 +29,17 @@ public:
   void FittingTuning(int i_which_func, void FuncTuning(TF1 *));
 
   void HistogramFitting(Option_t *option = "", Option_t *goption = "",
-                        Double_t xmin = 0, Double_t xmax = 0, int i_which_hist = -1);
-  void HistogramFitting(void FuncFitting(TH1D*,TF1*),int i_which_hist = -1);
+                        Double_t xmin = 0, Double_t xmax = 0,
+                        int i_which_hist = -1);
+  void HistogramFitting(void FuncFitting(TH1D *, TF1 *), int i_which_hist = -1);
 
-private:
+  void FittingResultRequest(int n_hist, int *list_pars, TString *list_names);
+  TH1F* GetFittingResult(int i_which_hist);
+  void ShowFittingResult(int i_which_hist=-1);
+
+  void SavingResults();
+
+ private:
   TString mName = "PID_Det";
   TH2F *mh2_raw = nullptr;
   vector<TH1D *> mVh1_pid;
@@ -42,8 +49,7 @@ private:
   int mNbinning_pid = 0;
   int mNpars;
 
-  TH1F *mh1_mean[4] = {nullptr};  // e pi k p
-  TH1F *mh1_width[4] = {nullptr}; // e pi k p
+  vector<TH1F *> mVh1_fitting_result;
 
   double (*mfcn)(double *, double *) = nullptr;
 
