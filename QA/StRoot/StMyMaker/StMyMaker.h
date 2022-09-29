@@ -14,7 +14,7 @@
 #include "StPicoEvent/StPicoEvent.h"
 #include "StPicoEvent/StPicoTrack.h"
 
-#define MINI_TREE
+// #define MINI_TREE
 
 class StMaker;
 class StPicoBTofPidTraits;
