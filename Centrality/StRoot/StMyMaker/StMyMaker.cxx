@@ -200,7 +200,7 @@ const Int_t StMyMaker::MakeEvent() {
     hrefmult3_Ntofcut->Fill(mEvent->refMult3());
   }
 
-  if (bool_ntofcut && fabs(PrimaryVertex.Z() - mEvent->vzVpd()) > 6.) {
+  if (bool_ntofcut && fabs(PrimaryVertex.Z() - mEvent->vzVpd()) < 6.) {
     hrefmult_Ntofcut_vpdcut->Fill(mEvent->refMult());
     hrefmult3_Ntofcut_vpdcut->Fill(mEvent->refMult3());
   }
