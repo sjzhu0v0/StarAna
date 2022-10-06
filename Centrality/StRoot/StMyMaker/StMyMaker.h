@@ -89,7 +89,9 @@ private:
   TH2F *hvzvzvpd;
   TH2F *hvzvzvpd_cut;
   TH1F *hbtofmatchmult;
+
   TH2F *h2NtofRefmult;
+  TH2F *h2NtofRefmult_vpdcut;
 
   TH1F *hrefmult;
   TH1F *hrefmult_vpdcut;

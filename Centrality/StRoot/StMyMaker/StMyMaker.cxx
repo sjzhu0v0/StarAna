@@ -110,6 +110,7 @@ Int_t StMyMaker::Finish() {
   hvzvzvpd_cut->Write();
   hbtofmatchmult->Write();
   h2NtofRefmult->Write();
+  h2NtofRefmult_vpdcut->Write();
   hrefmult->Write();
   hrefmult_vpdcut->Write();
   hrefmult_Ntofcut->Write();
@@ -181,8 +182,9 @@ const Int_t StMyMaker::MakeEvent() {
   hrefmult->Fill(mEvent->refMult());
   hrefmult3->Fill(mEvent->refMult3());
 
-  if (fabs(PrimaryVertex.Z() - mEvent->vzVpd()) > 6.) {
+  if (fabs(PrimaryVertex.Z() - mEvent->vzVpd()) < 6.) {
     hvzvzvpd_cut->Fill(PrimaryVertex.Z(), mEvent->vzVpd());
+    h2NtofRefmult->Fill(mEvent->nBTOFMatch(), mEvent->refMult());
     hrefmult_vpdcut->Fill(mEvent->refMult());
     hrefmult3_vpdcut->Fill(mEvent->refMult3());
   }
