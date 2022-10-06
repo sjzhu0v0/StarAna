@@ -63,8 +63,13 @@ Int_t StMyMaker::Init() {
       80, -100., 100., 80, -100., 100.);
   hbtofmatchmult = new TH1F("hbtofmatchmult", ";bTofMatchMult;#it{N}_{events}",
                             80, -0.5, 79.5);
+
   h2NtofRefmult = new TH2F("h2NtofRefmult", ";bTofMatchMult;RefMult", 80, -0.5,
                            79.5, 80, -0.5, 79.5);
+  h2NtofRefmult_vpdcut = new TH2F(
+      "h2NtofRefmult_vpdcut", ";bTofMatchMult;RefMult", 80, -0.5, 79.5, 80, -0.5,
+      79.5);
+
 
   hrefmult = new TH1F("hrefmult", ";RefMult;#it{N}_{events}", 80, -0.5, 79.5);
   hrefmult_vpdcut = new TH1F(
@@ -87,13 +92,13 @@ Int_t StMyMaker::Init() {
                80, -0.5, 79.5);
 
 #ifdef MINI_TREE
-  mOutTree = new TTree("TrackInfo", "TrackInfo");
-  mOutTree->Branch("Mom", mMom_Minitree, "Mom[3]/D");
-  mOutTree->Branch("Charge", &mCharge_Minitree, "Charge/S");
-  mOutTree->Branch("nSigmaProton", &mNSigmaProton_Minitree, "nSigmaProton/D");
-  mOutTree->Branch("nSigmaKaon", &mNSigmaKaon_Minitree, "nSigmaKaon/D");
-  mOutTree->Branch("nSigmaPion", &mNSigmaPion_Minitree, "nSigmaPion/D");
-  mOutTree->Branch("BTofM2", &mBTofM2_Minitree_Minitree, "BTofM2/D");
+  mOutTree = new TTree("EventInfo", "EventInfo");
+  //D,mVz;D,mVzVpd;I,mNBtofMatch;I,mRefMult;I,mRefMult3
+  mOutTree->Branch("Vz", &mVz, "Vz/D");
+  mOutTree->Branch("VzVpd", &mVzVpd, "VzVpd/D");
+  mOutTree->Branch("NBtofMatch", &mNBtofMatch, "NBtofMatch/I");
+  mOutTree->Branch("RefMult", &mRefMult, "RefMult/I");
+  mOutTree->Branch("RefMult3", &mRefMult3, "RefMult3/I");
 #endif
   return kStOK;
 }
@@ -119,7 +124,6 @@ Int_t StMyMaker::Finish() {
   hrefmult3_vpdcut->Write();
   hrefmult3_Ntofcut->Write();
   hrefmult3_Ntofcut_vpdcut->Write();
-  mOutFile->Close();
 
 #ifdef MINI_TREE
   mOutTree->Write();
@@ -184,7 +188,7 @@ const Int_t StMyMaker::MakeEvent() {
 
   if (fabs(PrimaryVertex.Z() - mEvent->vzVpd()) < 6.) {
     hvzvzvpd_cut->Fill(PrimaryVertex.Z(), mEvent->vzVpd());
-    h2NtofRefmult->Fill(mEvent->nBTOFMatch(), mEvent->refMult());
+    h2NtofRefmult_vpdcut->Fill(mEvent->nBTOFMatch(), mEvent->refMult());
     hrefmult_vpdcut->Fill(mEvent->refMult());
     hrefmult3_vpdcut->Fill(mEvent->refMult3());
   }
@@ -200,6 +204,16 @@ const Int_t StMyMaker::MakeEvent() {
     hrefmult_Ntofcut_vpdcut->Fill(mEvent->refMult());
     hrefmult3_Ntofcut_vpdcut->Fill(mEvent->refMult3());
   }
+
+  //filling the tree
+#ifdef MINI_TREE
+  mVz = PrimaryVertex.Z();
+  mVzVpd = mEvent->vzVpd();
+  mNBtofMatch = mEvent->nBTOFMatch();
+  mRefMult = mEvent->refMult();
+  mRefMult3 = mEvent->refMult3();
+  mOutTree->Fill();
+#endif
 
   return kStOK;
 }
