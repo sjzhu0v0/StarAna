@@ -107,9 +107,18 @@ Int_t StMyMaker::Finish() {
   hnevents->Write();
   hvz->Write();
   hvzvzvpd->Write();
-  hrefmult->Write();
-  hrefmult3->Write();
+  hvzvzvpd_cut->Write();
   hbtofmatchmult->Write();
+  h2NtofRefmult->Write();
+  hrefmult->Write();
+  hrefmult_vpdcut->Write();
+  hrefmult_Ntofcut->Write();
+  hrefmult_Ntofcut_vpdcut->Write();
+  hrefmult3->Write();
+  hrefmult3_vpdcut->Write();
+  hrefmult3_Ntofcut->Write();
+  hrefmult3_Ntofcut_vpdcut->Write();
+  mOutFile->Close();
 
 #ifdef MINI_TREE
   mOutTree->Write();
@@ -167,11 +176,13 @@ const Int_t StMyMaker::MakeEvent() {
   hvz->Fill(PrimaryVertex.Z());
   hvzvzvpd->Fill(PrimaryVertex.Z(), mEvent->vzVpd());
   hbtofmatchmult->Fill(mEvent->nBTOFMatch());
+  h2NtofRefmult->Fill(mEvent->nBTOFMatch(), mEvent->refMult());
 
   hrefmult->Fill(mEvent->refMult());
   hrefmult3->Fill(mEvent->refMult3());
 
   if (fabs(PrimaryVertex.Z() - mEvent->vzVpd()) > 6.) {
+    hvzvzvpd_cut->Fill(PrimaryVertex.Z(), mEvent->vzVpd());
     hrefmult_vpdcut->Fill(mEvent->refMult());
     hrefmult3_vpdcut->Fill(mEvent->refMult3());
   }
