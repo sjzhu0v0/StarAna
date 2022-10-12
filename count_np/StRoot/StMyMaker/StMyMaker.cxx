@@ -43,8 +43,6 @@ Int_t StMyMaker::Init() {
   mOutFile = new TFile(mOutName, "recreate");
   //	mOutFile->cd();
 
-  const Int_t nRunIndices = StMyCuts::RunIdIndex.size();
-
   hnevents = new TH1D("hnevents", "", 2, -0.5, 1.5);
 
 #ifdef MINI_TREE
@@ -141,7 +139,6 @@ const Int_t StMyMaker::MakeTrack(const Int_t it) {
 
   const TVector3 Dca = mTrack->gDCA(mEvent->primaryVertex());
   const TVector3 PMom = mTrack->pMom();
-  const Double_t PPt = PMom.Pt();
 
   if (mTrack->charge() > 0) {
     mNPTracks++;
