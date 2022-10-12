@@ -41,7 +41,6 @@ private:
   const Bool_t isGoodEvent() const;
   const Bool_t isGoodTrack() const;
   const Bool_t isProton() const;
-  const double sDcaxy_cal(TVector3 p, TVector3 dca);
 
   const TString mInName;
   const TString mOutName;
@@ -51,7 +50,6 @@ private:
   const StPicoDst *mPicoDst;
   const StPicoEvent *mEvent;
   const StPicoTrack *mTrack;
-  const StPicoBTofPidTraits *mBTofPidTraits;
 #ifdef MINI_TREE
   TTree *mOutTree;
   Int_t mRefMult3;

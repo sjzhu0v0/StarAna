@@ -37,13 +37,6 @@ ClassImp(StMyMaker)
 StMyMaker::~StMyMaker() {}
 
 //-----------------------------------------------------------------------------
-const double StMyMaker::sDcaxy_cal(TVector3 p, TVector3 dca) {
-  p = p.Unit();
-  float cosl = p.Perp();
-  return -p.Y() / cosl * dca.x() + p.x() / cosl * dca.y();
-}
-
-//-----------------------------------------------------------------------------
 Int_t StMyMaker::Init() {
   cout << "Initializing histograms." << endl;
 
@@ -86,7 +79,6 @@ void StMyMaker::Clear(Option_t *option) {
   mPicoDst = nullptr;
   mEvent = nullptr;
   mTrack = nullptr;
-  mBTofPidTraits = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -120,11 +112,6 @@ const Int_t StMyMaker::MakeEvent() {
   if (!isGoodTrigger() || !isGoodEvent())
     return kStOK;
 
-  mRunIndex = StMyCuts::RunIdIndex.at(mEvent->runId());
-  const TVector3 PrimaryVertex(mEvent->primaryVertex().x(),
-                               mEvent->primaryVertex().y(),
-                               mEvent->primaryVertex().z());
-
   hnevents->Fill(1.);
 
   mRefMult3 = mEvent->refMult3();
@@ -148,17 +135,12 @@ const Int_t StMyMaker::MakeTrack(const Int_t it) {
     LOG_WARN << "Error opening picoDst Track! Skip!" << endm;
     return kStWarn;
   }
-  mBTofPidTraits = mTrack->bTofPidTraitsIndex() != -1
-                       ? (const StPicoBTofPidTraits *)mPicoDst->btofPidTraits(
-                             mTrack->bTofPidTraitsIndex())
-                       : nullptr;
 
   if (!isGoodTrack())
     return kStOK;
 
   const TVector3 Dca = mTrack->gDCA(mEvent->primaryVertex());
   const TVector3 PMom = mTrack->pMom();
-  const Double_t SDcaXY = sDcaxy_cal(PMom, Dca);
   const Double_t PPt = PMom.Pt();
 
   if (mTrack->charge() > 0) {
