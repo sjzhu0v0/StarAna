@@ -14,7 +14,7 @@
 #include "StPicoEvent/StPicoEvent.h"
 #include "StPicoEvent/StPicoTrack.h"
 
-// #define MINI_TREE
+#define MINI_TREE
 
 class StMaker;
 class StPicoBTofPidTraits;
@@ -58,12 +58,22 @@ private:
   const StPicoBTofPidTraits *mBTofPidTraits;
 #ifdef MINI_TREE
   TTree *mOutTree;
-  Double_t mMom_Minitree[3];
-  Short_t mCharge_Minitree;
-  Double_t mNSigmaProton_Minitree;
-  Double_t mNSigmaKaon_Minitree;
-  Double_t mNSigmaPion_Minitree;
-  Double_t mBTofM2_Minitree_Minitree;
+// Event Level
+  Float_t mVz_Minitree;
+  Float_t mVzvpd_Minitree;
+  Float_t mZdcX_Minitree;
+  Int_t mRefMult_Minitree;
+  Int_t mRefMult3_Minitree;
+  Int_t mNTracks_Minitree;
+
+// Track Level
+  Float_t mMom_Minitree[3][1000];
+  Short_t mCharge_Minitree[1000];
+  Float_t mNSigmaProton_Minitree[1000];
+  Float_t mNSigmaKaon_Minitree[1000];
+  Float_t mNSigmaPion_Minitree[1000];
+  Float_t mBTofM2_Minitree[1000];
+  Float_t m1oBeta_Minitree[1000];
 #endif
   Int_t mRunIndex;
   Int_t mNPTracks;

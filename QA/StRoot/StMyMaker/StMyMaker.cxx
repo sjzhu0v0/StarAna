@@ -251,12 +251,23 @@ Int_t StMyMaker::Init() {
 
 #ifdef MINI_TREE
   mOutTree = new TTree("TrackInfo", "TrackInfo");
-  mOutTree->Branch("Mom", mMom_Minitree, "Mom[3]/D");
-  mOutTree->Branch("Charge", &mCharge_Minitree, "Charge/S");
-  mOutTree->Branch("nSigmaProton", &mNSigmaProton_Minitree, "nSigmaProton/D");
-  mOutTree->Branch("nSigmaKaon", &mNSigmaKaon_Minitree, "nSigmaKaon/D");
-  mOutTree->Branch("nSigmaPion", &mNSigmaPion_Minitree, "nSigmaPion/D");
-  mOutTree->Branch("BTofM2", &mBTofM2_Minitree_Minitree, "BTofM2/D");
+
+  mOutTree->Branch("Vz", &mVz_Minitree, "Vz/F");
+  mOutTree->Branch("Vzvpd", &mVzvpd_Minitree, "Vzvpd/F");
+  mOutTree->Branch("ZdcX", &mZdcX_Minitree, "ZdcX/F");
+  mOutTree->Branch("RefMult", &mRefMult_Minitree, "RefMult/I");
+  mOutTree->Branch("RefMult3", &mRefMult3_Minitree, "RefMult3/I");
+  mOutTree->Branch("NTracks", &mNTracks_Minitree, "NTracks/I");
+
+  mOutTree->Branch("Mom", mMom_Minitree, "Mom[3][NTracks]]/F");
+  mOutTree->Branch("Charge", mCharge_Minitree, "Charge[NTracks]/S");
+  mOutTree->Branch("NSigmaProton", mNSigmaProton_Minitree,
+                   "NSigmaProton[NTracks]/F");
+  mOutTree->Branch("NSigmaKaon", mNSigmaKaon_Minitree, "NSigmaKaon[NTracks]/F");
+  mOutTree->Branch("NSigmaPion", mNSigmaPion_Minitree, "NSigmaPion[NTracks]/F");
+  mOutTree->Branch("BTofM2", mBTofM2_Minitree, "BTofM2[NTracks]/F");
+  mOutTree->Branch("1oBeta", m1oBeta_Minitree, "1oBeta[NTracks]/F");
+
 #endif
   return kStOK;
 }
@@ -364,7 +375,6 @@ Int_t StMyMaker::Finish() {
 
 #ifdef MINI_TREE
   mOutTree->Write();
-  cout << mOutTree->GetEntries() << " tracks have been recorded." << endl;
 #endif
   mOutFile->Close();
 
@@ -451,8 +461,16 @@ const Int_t StMyMaker::MakeEvent() {
       mNKaonP = mNKaonM = mNProtonP = mNProtonM = 0;
   mQ1xTpc = mQ1yTpc = mQ2xTpc = mQ2yTpc = 0.;
   const Int_t nTracks = mPicoDst->numberOfTracks();
-  for (Int_t it = 0; it < nTracks; it++)
+
+#ifdef MINI_TREE
+  mNTracks_Minitree = 0;
+#endif
+  for (Int_t it = 0; it < nTracks; it++) {
     MakeTrack(it);
+  }
+#ifdef MINI_TREE
+  mOutTree->Fill();
+#endif
 
   hnptracks->Fill(mNPTracks);
   hnntracks->Fill(mNNTracks);
@@ -596,15 +614,15 @@ const Int_t StMyMaker::MakeTrack(const Int_t it) {
     mQ2yTpc += Weight * TMath::Sin(2. * PPhi);
   }
 #ifdef MINI_TREE
-  mMom_Minitree[0] = PMom.Px();
-  mMom_Minitree[1] = PMom.Py();
-  mMom_Minitree[2] = PMom.Pz();
-  mCharge_Minitree = mTrack->charge();
-  mNSigmaProton_Minitree = mTrack->nSigmaProton();
-  mNSigmaKaon_Minitree = mTrack->nSigmaKaon();
-  mNSigmaPion_Minitree = mTrack->nSigmaPion();
-  mBTofM2_Minitree_Minitree = BTofM2;
-  mOutTree->Fill();
+  mMom_Minitree[0][mNTracks_Minitree] = PMom.Px();
+  mMom_Minitree[1][mNTracks_Minitree] = PMom.Py();
+  mMom_Minitree[2][mNTracks_Minitree] = PMom.Pz();
+  mCharge_Minitree[mNTracks_Minitree] = mTrack->charge();
+  mNSigmaProton_Minitree[mNTracks_Minitree] = mTrack->nSigmaProton();
+  mNSigmaKaon_Minitree[mNTracks_Minitree] = mTrack->nSigmaKaon();
+  mNSigmaPion_Minitree[mNTracks_Minitree] = mTrack->nSigmaPion();
+  mBTofM2_Minitree[mNTracks_Minitree] = BTofM2;
+  m1oBeta_Minitree[mNTracks_Minitree] = 1. / BTofBeta;
 #endif
   return kStOK;
 }
@@ -668,7 +686,7 @@ const Bool_t StMyMaker::isGoodTrack() const {
       mTrack->pMom().Perp() > StMyCuts::PtCutQ[1])
     return kFALSE;
   if (mTrack->pMom().PseudoRapidity() < StMyCuts::EtaCutQ[0] ||
-      mTrack->pMom().PseudoRapidity() > StMyCuts::EtaCutQ[1]) 
+      mTrack->pMom().PseudoRapidity() > StMyCuts::EtaCutQ[1])
     return kFALSE;
   return kTRUE;
 }
