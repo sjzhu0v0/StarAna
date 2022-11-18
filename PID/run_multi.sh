@@ -3,4 +3,4 @@ rm -rf *
 cmake ../
 make
 cd ..
-root -l run.cpp
+root -l run_multi.cpp

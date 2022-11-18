@@ -1,22 +1,33 @@
-#include "Pid_func.h"
+#include "Pid_func_single.h"
 
-void run() {
-  R__LOAD_LIBRARY(./build/libPID_Def.so);
+void run_single() {
+  R__LOAD_LIBRARY(./ build / libPID_Def.so);
 
   TFile *file_input = new TFile("/data/work/STAR/pAu200_netproton_fluctuation/"
-                                "data/result_with_extend_tree.root");
+                                "data/result_with_extended_tree.root");
   TFile *file_output = new TFile("./test.root", "recreate");
   PID_Det *pid_det =
       new PID_Det(PID_Def::WRITE, file_input, file_output, PID_FCN::gaus, 3);
 
-  const int n_binning_pq = 60;
-  const double edge_low_pq = -3;
-  const double edge_high_pq = 3;
+  const int n_binning_pq = 40;
+  const double edge_low_pq = -2.;
+  const double edge_high_pq = 2.;
+
+  const int n_binning_y = 10;
+  const double edge_low_y = -1.;
+  const double edge_high_y = 1.;
+
   double pq_binning[n_binning_pq + 1] = {0};
 
   for (int i = 0; i <= n_binning_pq; i++) {
     pq_binning[i] =
         edge_low_pq + (edge_high_pq - edge_low_pq) / (double)n_binning_pq * i;
+  }
+
+  double y_binning[n_binning_y + 1] = {0};
+  for (int i = 0; i <= n_binning_y; i++) {
+    y_binning[i] =
+        edge_low_y + (edge_high_y - edge_low_y) / (double)n_binning_y * i;
   }
 
   // pid_det->GetRawHistogram("hpqnsigmaproton");
@@ -32,7 +43,7 @@ void run() {
                            names_var_pid, 4, filling_h2_pid);
   pid_det->InitializeHistogram(n_binning_pq, pq_binning);
   pid_det->HistogramFitting(func_fitting);
-  pid_det->HistogramFitting(func_fitting_56, 56);
+  // pid_det->HistogramFitting(func_fitting_56, 56);
   pid_det->ShowRawHistogram();
   pid_det->ShowPIDHistogram();
 
@@ -96,8 +107,10 @@ void run() {
                            names_var_pid, 4, filling_h2_pid);
   pid_det->InitializeHistogram(n_binning_pq, pq_binning);
   pid_det->HistogramFitting(func_fitting);
-  pid_det->HistogramFitting(func_fitting,32);
-  pid_det->HistogramFitting(func_fitting,36);
+  pid_det->HistogramFitting(func_fitting_19, 19);
+  pid_det->HistogramFitting(func_fitting_27, 27);
+  pid_det->HistogramFitting(func_fitting_29, 29);
+  pid_det->HistogramFitting(func_fitting_32, 32);
   pid_det->ShowRawHistogram();
   // pid_det->ShowPIDHistogram(33,false);
   pid_det->ShowPIDHistogram();
@@ -114,6 +127,6 @@ void run() {
 }
 
 int main() {
-  run();
+  run_single();
   return 0;
 }

@@ -2,6 +2,7 @@
 #define PID_Def_h
 
 #include "TCanvas.h"
+#include "Math/ProbFuncMathCore.h"
 #include "TF1.h"
 #include "TF2.h"
 #include "TFile.h"
@@ -16,6 +17,8 @@
 #include "TString.h"
 #include "TTree.h"
 #include "TVector3.h"
+#include "TH3F.h"
+#include "TStyle.h"
 
 #include "iostream"
 #include "string"
@@ -24,8 +27,12 @@ using namespace std;
 
 namespace PID_FCN {
 double gaus(double *x, double *p);
+double two_gaus(double *x, double *p);
 double four_gaus(double *x, double *p);
 double three_gaus(double *x, double *p);
+double purity_gaussian(double bound_low = -20, double bound_high = 20,
+                     double mean1 = 0, double sigma1 = 1, double height1 = 1,
+                     double mean2 = 2, double sigma2 = 1, double height2 = 1);
 }; // namespace PID_FCN
 
 class PID_Def {
@@ -37,17 +44,6 @@ public:
   PID_Def(const PID_Def &pid_def);
 
   virtual ~PID_Def();
-
-  virtual void GetRawHistogram(TString name) = 0;
-  virtual void ShowRawHistogram() = 0;
-  virtual void InitializeHistogram(int n_bin, double edge_low,
-                                   double edge_high) = 0;
-  virtual void InitializeHistogram(int n_bin, double *binning) = 0;
-  virtual void ShowPIDHistogram() = 0;
-
-  virtual void HistogramFitting(Option_t *option, Option_t *goption,
-                                Double_t xmin, Double_t xmax,
-                                int i_which_hist) = 0;
 
 protected:
   IO_TYPE mio_type = READ;

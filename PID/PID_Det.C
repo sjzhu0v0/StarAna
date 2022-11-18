@@ -42,29 +42,13 @@ PID_Det::PID_Det(IO_TYPE io_type, const PID_Def *pid_def,
 
 PID_Det::~PID_Det() {}
 
-void PID_Det::GetRawHistogram(TString name) {
-  if (mio_type == WRITE) {
-    mh2_raw = (TH2F *)mfile_input->Get(name);
-    mh2_raw->SetName("mh2_raw");
-    if (mh2_raw == nullptr)
-      cerr << "mh2_raw is ill-defined." << endl;
-  }
-}
-
-void PID_Det::GetRawHistogram(TH2F *h2_template, TString tree_name,
-                              TString p_var_name, TString name_charge,
-                              TString names_var[], int n_var,
-                              void fill(TH2F *, double *, double, double *)) {
-#ifdef DEBUG
-  cout << "PID_Det::GetRawHistogram" << endl;
-
-#endif
+void PID_Det::InitializeTree(TString tree_name, TString p_var_name,
+                             TString name_charge, TString names_var[],
+                             int n_var) {
   mNvars = n_var;
   mPid_var = new double[mNvars];
 
   if (mio_type == WRITE) {
-    mh2_raw = (TH2F *)h2_template->Clone("mh2_raw");
-
     mTree_input = (TTree *)mfile_input->Get(tree_name);
     mTree_input->SetBranchAddress(p_var_name, mP3);
     mTree_input->SetBranchAddress(name_charge, &mCharge);
@@ -72,136 +56,137 @@ void PID_Det::GetRawHistogram(TH2F *h2_template, TString tree_name,
     for (int i = 0; i < mNvars; i++) {
       mTree_input->SetBranchAddress(names_var[i], (mPid_var + i));
     }
+  }
+}
 
-    for (long i = 0; i < mTree_input->GetEntries(); i++) {
-      mTree_input->GetEntry(i);
-      fill(mh2_raw, mP3, mCharge, mPid_var);
+void PID_Det::InitializeHistogram(TH1D *hist_raw, int n_var, ...) {
+  va_list ap;
+  va_start(ap, n_var);
+  for (int i = 0; i < n_var / 2; i++) {
+    int n_bin = va_arg(ap, int);
+    double *binning = va_arg(ap, double *);
+    mvec_nbinning.push_back(n_bin);
+    mvec_binning.push_back(binning);
+  }
+  va_end(ap);
+
+  int n_hist = 1;
+  for (int i : mvec_nbinning) {
+    n_hist *= i;
+  }
+
+#ifdef DEBUG
+  cout << n_hist << " histograms will be defined. " << endl;
+  cout << mvec_nbinning.size() << endl;
+#endif
+
+  for (int i = 0; i < n_hist; i++) {
+    string name_hist;
+    int index_rem = i;
+    for (int j = 0; j < mvec_nbinning.size(); j++) {
+      name_hist =
+          "_" +
+          to_string(index_rem % mvec_nbinning[mvec_nbinning.size() - j - 1]) +
+          name_hist;
+      index_rem = index_rem / mvec_nbinning[mvec_nbinning.size() - j - 1];
     }
-
-    if (mh2_raw == nullptr)
-      cerr << "mh2_raw is ill-defined." << endl;
+    name_hist = "h1_raw" + name_hist;
+#ifdef DEBUG
+    cout << name_hist << endl;
+#endif
+    mVh1_pid.push_back((TH1D *)hist_raw->Clone(name_hist.c_str()));
+    name_hist = "f1_" + name_hist;
+    mVf1_pid.push_back(new TF1(name_hist.c_str(), mfcn,
+                               hist_raw->GetXaxis()->GetXmin(),
+                               hist_raw->GetXaxis()->GetXmax(), mNpars));
   }
 }
 
-void PID_Det::ShowRawHistogram() {
-  if (mh2_raw == nullptr) {
-    cerr << "There is no h_raw. Nothing has been drawn." << endl;
+void PID_Det::HistogramFilling(
+    void HistFilling(TH1D *h1, double *mom, double charge, double *vars_pid),
+    void TagCal(double *mom, double charge, double *vars_tag),
+    bool CutCal(double *mom, double charge, double *vars_pid)) {
+  for (long iEntry = 0; iEntry < mTree_input->GetEntries(); iEntry++) {
+    mTree_input->GetEntry(iEntry);
+    if (CutCal(mP3, mCharge, mPid_var)) {
+      double *vars_tag = new double[mvec_nbinning.size()];
+      TagCal(mP3, mCharge, vars_tag);
+      int i_hist = 0;
+      bool doFill = true;
+      for (int i = 0; i < mvec_nbinning[i]; i++) {
+        double var_tag = *(vars_tag + i);
+        if (var_tag < *(mvec_binning[i]) ||
+            var_tag > *(mvec_binning[i] + mvec_nbinning[i])) {
+          doFill = false;
+          break;
+        }
+        for (int j = 0; j < mvec_nbinning[i]; j++) {
+          if (var_tag > *(mvec_binning[i] + j) &&
+              var_tag < *(mvec_binning[i] + j + 1)) {
+            i_hist *= mvec_nbinning[i];
+            i_hist += j;
+          }
+        }
+      }
+      if (doFill) {
+        HistFilling(mVh1_pid[i_hist], mP3, mCharge, mPid_var);
+      }
+    }
+  }
+}
+
+void PID_Det::ShowHistogram(int i_hist) {
+  gStyle->SetOptStat(0);
+  if (i_hist == -1) {
+    if (mVh1_pid.size() < 100) {
+      TCanvas *c1 = new TCanvas("c_RawHist", "c_RawHist", 1000, 1000);
+      int n_division = sqrt(mVh1_pid.size()) + 1;
+      c1->Divide(n_division, n_division);
+      for (int i = 0; i < mVh1_pid.size(); i++) {
+        c1->cd(i + 1);
+        mVh1_pid[i]->Draw();
+        // Draw the index of the histogram at the middle of the pad
+        TLatex *latex = new TLatex();
+        latex->DrawLatexNDC(0.5, 0.5, to_string(i).c_str());
+      }
+    } else {
+      // Draw all histograms 100 in per canvas
+      int n_division = 4;
+      int n_canvas = mVh1_pid.size() / pow(n_division, 2);
+      if (mVh1_pid.size() % (int)pow(n_division, 2) != 0)
+        n_canvas++;
+
+      for (int i = 0; i < n_canvas; i++) {
+        TCanvas *c1 = new TCanvas(Form("c_RawHist_%d", i),
+                                  Form("c_RawHist_%d", i), 1000, 1000);
+        c1->Divide(4, 4);
+        for (int j = 0; j < pow(n_division, 2); j++) {
+          if (i * pow(n_division, 2) + j < mVh1_pid.size()) {
+            c1->cd(j + 1);
+            mVh1_pid[i * pow(n_division, 2) + j]->Draw();
+            // Draw the index of the histogram at the middle of the pad
+            TLatex *latex = new TLatex();
+            latex->SetTextSize(0.1);
+            latex->DrawLatexNDC(
+                0.1, 0.8,
+                Form("%.0f:%s", i * pow(n_division, 2) + j,
+                     mVh1_pid[i * pow(n_division, 2) + j]->GetName()));
+          }
+        }
+      }
+    }
   } else {
-    TCanvas *c_Det_raw = new TCanvas("c_Det_raw", "c_Det_raw", 900, 900);
-    c_Det_raw->cd();
-    gPad->SetLogz();
-    mh2_raw->Draw("colz");
-  }
-}
-
-void PID_Det::InitializeHistogram(int n_bin, double edge_low,
-                                  double edge_high) {
-  double array_temp[(const int)n_bin + 1];
-  for (int i = 0; i < n_bin; i++) {
-    array_temp[i] = edge_low + (edge_high - edge_low) / (double)n_bin * i;
-  }
-  mbinning_pid = array_temp;
-
-  mNbinning_pid = n_bin;
-  InitializeHistogram();
-}
-
-void PID_Det::InitializeHistogram(int n_bin, double *binning) {
-  mbinning_pid = binning;
-
-  mNbinning_pid = n_bin;
-  InitializeHistogram();
-}
-
-void PID_Det::InitializeHistogram() {
-#ifdef DEBUG
-  cout << "mv_binning_pid: " << mNbinning_pid << endl;
-#endif
-
-  for (int i = 0; i < mNbinning_pid; i++) {
-    // histogram name keep two decimal places
-    mVh1_pid.push_back(mh2_raw->ProjectionY(
-        Form("mh1_pid_%d_%d", i, i + 1),
-        mh2_raw->GetXaxis()->FindBin(*(mbinning_pid + i)),
-        mh2_raw->GetXaxis()->FindBin(*(mbinning_pid + i + 1))));
-#ifdef DEBUG
-    cout << "N bins: " << mh2_raw->GetXaxis()->GetNbins() << endl;
-    cout << Form("mh1_pid_%d_%d", i, i + 1) << ":"
-         << mh2_raw->GetXaxis()->FindBin(*(mbinning_pid + i)) << " to "
-         << mh2_raw->GetXaxis()->FindBin(*(mbinning_pid + i + 1)) << endl;
-#endif
-  }
-
-  for (int i = 0; i < mNbinning_pid; i++) {
-    mVf1_pid.push_back(new TF1(Form("mf1_pid_%d_%d", i, i + 1), mfcn,
-                               mVh1_pid[i]->GetXaxis()->GetXmin(),
-                               mVh1_pid[i]->GetXaxis()->GetXmax(), mNpars));
-  }
-}
-
-void PID_Det::ShowPIDHistogram(int i_which_hist, bool is_logy) {
-  TCanvas *c_pid = new TCanvas("c_Det_PID", "c_Det_PID", 1000, 900);
-  c_pid->cd();
-  if (is_logy)
-    gPad->SetLogy();
-  mVh1_pid[i_which_hist]->Draw();
-}
-
-void PID_Det::ShowPIDHistogram() {
-  TCanvas *c_pid = new TCanvas("c_Det_PID", "c_Det_PID", 1000, 900);
-  int temp = ceil(sqrt(mNbinning_pid));
-  int n_high, n_width;
-  if (temp % 2 == 0) {
-    n_width = temp;
-    n_high = temp + 1;
-  } else {
-    n_width = temp + 1;
-    n_high = temp;
-  }
-
-  c_pid->Divide(n_width, n_high);
-  for (int i = 0; i < mNbinning_pid / 2; i++) {
-    int i2plotted = i + 1 + (n_width / 2) * (i / (n_width / 2));
-#ifdef DEBUG
-    cout << i2plotted << " " << mNbinning_pid / 2 - i;
-#endif
-    c_pid->cd(i2plotted);
-    gPad->SetLogy();
-    mVh1_pid[mNbinning_pid / 2 - i - 1]->Draw();
-
-    TLatex *latex1 =
-        new TLatex(0.15, 0.8,
-                   Form("%d:%.2f < pq < %.2f", mNbinning_pid / 2 - i - 1,
-                        *(mbinning_pid + mNbinning_pid / 2 - i - 1),
-                        *(mbinning_pid + mNbinning_pid / 2 - i)));
-    latex1->SetNDC();
-    latex1->SetTextSize(0.1);
-    latex1->SetTextColor(kRed);
-    latex1->Draw();
-
-    i2plotted = i + 1 + (n_width / 2) * (i / (n_width / 2) + 1);
-    c_pid->cd(i2plotted);
-    gPad->SetLogy();
-    mVh1_pid[mNbinning_pid / 2 + i]->Draw();
-#ifdef DEBUG
-    cout << "  " << i2plotted << "  " << mNbinning_pid / 2 + 1 + i << endl;
-#endif
-    TLatex *latex2 =
-        new TLatex(0.15, 0.8,
-                   Form("%d:%.2f < pq < %.2f", mNbinning_pid / 2 + i,
-                        *(mbinning_pid + mNbinning_pid / 2 + i),
-                        *(mbinning_pid + mNbinning_pid / 2 + i + 1)));
-    latex2->SetNDC();
-    latex2->SetTextSize(0.1);
-    latex2->SetTextColor(kRed);
-    latex2->Draw();
+    TCanvas *c1 = new TCanvas("c_RawHist", "c_RawHist", 1000, 1000);
+    mVh1_pid[i_hist]->Draw();
+    c1->Update();
+    c1->WaitPrimitive();
   }
 }
 
 void PID_Det::HistogramFitting(Option_t *option, Option_t *goption,
                                Double_t xmin, Double_t xmax, int i_which_hist) {
   if (i_which_hist == -1) {
-    for (int i = 0; i < mNbinning_pid; i++) {
+    for (int i = 0; i < mVh1_pid.size(); i++) {
       if (mVh1_pid[i]->Integral() < 50)
         continue;
       cout << "================================================" << endl;
@@ -218,7 +203,7 @@ void PID_Det::HistogramFitting(Option_t *option, Option_t *goption,
 void PID_Det::HistogramFitting(void FuncFitting(TH1D *, TF1 *),
                                int i_which_hist) {
   if (i_which_hist == -1) {
-    for (int i = 0; i < mNbinning_pid; i++) {
+    for (int i = 0; i < mVh1_pid.size(); i++) {
       if (mVh1_pid[i]->Integral() < 50)
         continue;
       cout << "================================================" << endl;
@@ -236,13 +221,13 @@ void PID_Det::FittingParInit(int i_which_fcn, double *pars) {
 }
 
 void PID_Det::FittingParInit(double *pars) {
-  for (int i = 0; i < mNbinning_pid; i++) {
+  for (int i = 0; i < mVh1_pid.size(); i++) {
     mVf1_pid[i]->SetParameters(pars);
   }
 }
 
 void PID_Det::FittingTuning(void FuncTuning(TF1 *)) {
-  for (int i = 0; i < mNbinning_pid; i++)
+  for (int i = 0; i < mVh1_pid.size(); i++)
     FittingTuning(i, FuncTuning);
 }
 
@@ -250,44 +235,15 @@ void PID_Det::FittingTuning(int i_which_func, void FuncTuning(TF1 *)) {
   FuncTuning(mVf1_pid[i_which_func]);
 }
 
-void PID_Det::FittingResultRequest(int n_hist, int *list_pars,
-                                   TString *list_names) {
-  for (int ihist = 0; ihist < n_hist; ihist++) {
-    mVh1_fitting_result.push_back(
-        new TH1F(list_names[ihist], ";pq[GeV/c]", mNbinning_pid, mbinning_pid));
-    for (int ibin = 0; ibin < mNbinning_pid; ibin++) {
-      mVh1_fitting_result[ihist]->SetBinContent(
-          ibin, mVf1_pid[ibin]->GetParameter(list_pars[ihist]));
-    }
-  }
-}
-
-TH1F *PID_Det::GetFittingResult(int i_which_hist) {
-  return mVh1_fitting_result[i_which_hist];
+TH1 *PID_Det::FittingResultRequest(
+    TH1 *FuncResult(vector<TF1 *> vec_f1, vector<TH1D *> vec_h1,
+                    vector<int> mvec_nbinning, vector<double *> mvec_binning)) {
+  return FuncResult(mVf1_pid, mVh1_pid, mvec_nbinning, mvec_binning);
 }
 
 void PID_Det::SavingResults() {
   mfile_output->cd();
-  mh2_raw->Write();
   for (auto ihist : mVh1_pid)
     ihist->Write();
-  for (auto ihist : mVh1_fitting_result)
-    ihist->Write();
   mfile_output->Close();
-}
-
-void PID_Det::ShowFittingResult(int i_which_hist) {
-  TCanvas *c_fitting_result =
-      new TCanvas("c_fitting_result", "c_fitting_result", 1000, 900);
-
-  if (i_which_hist == -1) {
-    int n_width = ceil(sqrt(mVh1_fitting_result.size()));
-    c_fitting_result->Divide(n_width + 1, n_width);
-    for (int i = 0; i < mVh1_fitting_result.size(); i++) {
-      c_fitting_result->cd(i + 1);
-      mVh1_fitting_result[i]->Draw();
-    }
-  } else {
-    mVh1_fitting_result[i_which_hist]->Draw();
-  }
 }

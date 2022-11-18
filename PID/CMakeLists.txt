@@ -28,16 +28,3 @@ message("PROJECT_SOURCE_DIR" ${PROJECT_SOURCE_DIR})
 target_link_libraries(PID_Def PUBLIC
   ${ROOT_LIBRARIES} -L${ROOT_LIBRARY_DIR}
 )
-
-add_executable(run run.cpp)
-
-target_include_directories(run PUBLIC
-  ${ROOT_INCLUDE_DIRS}
-)
-
-target_link_libraries(run
-  ${ROOT_LIBRARIES} -L${ROOT_LIBRARY_DIR}
-  PID_Def
-)
-
-# include("$ENV{ROOTSYS}/cmake/RootMacros.cmake")
