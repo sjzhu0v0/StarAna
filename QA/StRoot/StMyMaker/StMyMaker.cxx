@@ -661,7 +661,7 @@ const Bool_t StMyMaker::isGoodEvent() const {
   const Double_t Vx = mEvent->primaryVertex().x();
   const Double_t Vy = mEvent->primaryVertex().y();
   const Double_t Vz = mEvent->primaryVertex().z();
-  cout << "Vx = " << Vx << ", Vy = " << Vy << ", Vz = " << Vz << endl;
+  LOG_INFO << "Vx = " << Vx << ", Vy = " << Vy << ", Vz = " << Vz << endm;
   if (TMath::Abs(Vx) < 1.e-5 && TMath::Abs(Vy) < 1.e-5 &&
       TMath::Abs(Vz) < 1.e-5)
     return kFALSE;
