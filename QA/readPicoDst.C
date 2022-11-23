@@ -22,7 +22,7 @@ void readPicoDst(const Char_t *const inputFile = "test.list",
   TStopwatch *const stopWatch = new TStopwatch();
   stopWatch->Start();
 
-  const TString SL_version = "SL20a";
+  const TString SL_version = "SL18h";
   const TString env_SL = gSystem->Getenv("STAR");
   if (!env_SL.Contains(SL_version)) {
     cout << "Environment Star Library does not match the requested library in "
@@ -52,8 +52,6 @@ void readPicoDst(const Char_t *const inputFile = "test.list",
   gSystem->Load("StTofUtil");
   gSystem->Load("StPmdUtil");
   gSystem->Load("StPreEclMaker");
-  gSystem->Load("StStrangeMuDstMaker");
-  gSystem->Load("StMuDSTMaker");
   gSystem->Load("StMagF");
   gSystem->Load("StMtdHitMaker");
   gSystem->Load("StMtdUtil");
