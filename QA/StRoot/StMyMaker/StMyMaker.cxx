@@ -410,7 +410,7 @@ Int_t StMyMaker::Make() {
 //-----------------------------------------------------------------------------
 const Int_t StMyMaker::MakeEvent() {
   mEvent = (const StPicoEvent *)mPicoDst->event();
-  mEvent->Print();
+  // mEvent->Print();
   if (!mEvent) {
     LOG_WARN << "Error opening picoDst Event! Skip!" << endm;
     return kStWarn;
