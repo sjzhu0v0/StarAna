@@ -52,6 +52,8 @@ void readPicoDst(const Char_t *const inputFile = "test.list",
   gSystem->Load("StTofUtil");
   gSystem->Load("StPmdUtil");
   gSystem->Load("StPreEclMaker");
+  gSystem->Load("StStrangeMuDstMaker");
+  gSystem->Load("StMuDSTMaker");
   gSystem->Load("StMagF");
   gSystem->Load("StMtdHitMaker");
   gSystem->Load("StMtdUtil");
