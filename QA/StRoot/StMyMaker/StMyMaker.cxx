@@ -658,7 +658,7 @@ const Double_t StMyMaker::getBTofBeta(const UChar_t iCase) const {
 //-----------------------------------------------------------------------------
 const Bool_t StMyMaker::isGoodTrigger() const {
   for (auto iTrigger : StMyCuts::Trigger) {
-    LOG_INFO << "Trigger: " << iTrigger << endm;
+    // LOG_INFO << "Trigger: " << iTrigger << endm;
     if (mEvent->isTrigger(iTrigger))
       return kTRUE;
   }
