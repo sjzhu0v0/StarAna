@@ -43,7 +43,7 @@ Int_t StMyMaker::Init() {
   mOutFile = new TFile(mOutName, "recreate");
   //	mOutFile->cd();
 
-  hnevents = new TH1D("hnevents", "", 2, -0.5, 1.5);
+  hnevents = new TH1D("hnevents", "", 2, -0.5, 2.5);
 
 #ifdef MINI_TREE
   mOutTree = new TTree("TrackInfo", "TrackInfo");

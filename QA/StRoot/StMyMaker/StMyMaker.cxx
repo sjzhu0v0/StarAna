@@ -410,15 +410,22 @@ Int_t StMyMaker::Make() {
 //-----------------------------------------------------------------------------
 const Int_t StMyMaker::MakeEvent() {
   mEvent = (const StPicoEvent *)mPicoDst->event();
-  mEvent->Print();  
+  mEvent->Print();
   if (!mEvent) {
     LOG_WARN << "Error opening picoDst Event! Skip!" << endm;
     return kStWarn;
   }
   hnevents->Fill(0.);
 
-  if (!isGoodTrigger() || !isGoodEvent())
+  if (!isGoodTrigger()) {
+    hnevents->Fill(1.);
     return kStOK;
+  }
+
+  if (!isGoodEvent()) {
+    hnevents->Fill(2.);
+    return kStOK;
+  }
 
   mRunIndex = StMyCuts::RunIdIndex.at(mEvent->runId());
   const TVector3 PrimaryVertex(mEvent->primaryVertex().x(),
