@@ -7,7 +7,7 @@
 #include "Rtypes.h"
 
 namespace StMyCuts {
-const std::vector<UInt_t> Trigger = {500904};
+const std::vector<UInt_t> Trigger = {500001};
 const std::vector<Double_t> VzCut = {-30., 30.};
 // const Double_t VrCut = 2.;
 const Double_t DcaCut = 1.;
@@ -208,7 +208,7 @@ const std::map<Int_t, Int_t> RunIdIndex = {
     {16159019, 744}, {16159020, 745}, {16159023, 746}, {16159024, 747}};
 
 const int n_badrun = 80;
-const int BadRunList[80] = {
+const int BadRunList[n_badrun] = {
     16124033, 16124034, 16125003, 16125014, 16125035, 16125024, 16125016,
     16125038, 16127047, 16130005, 16130012, 16130015, 16154010, 16157026,
     16154011, 16149056, 16153036, 16153037, 16155019, 16155028, 16156009,
