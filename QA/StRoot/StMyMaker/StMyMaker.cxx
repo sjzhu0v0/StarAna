@@ -666,11 +666,11 @@ const Bool_t StMyMaker::isGoodEvent() const {
     return kFALSE;
   if (Vz <= StMyCuts::VzCut[0] || Vz >= StMyCuts::VzCut[1])
     return kFALSE;
-  for (int i; i < StMyCuts::n_goodrun; i++) {
-    if (mRunIndex == StMyCuts::GoodRunList[i])
-      return kTRUE;
+  for (int i; i < StMyCuts::n_badrun; i++) {
+    if (mRunIndex == StMyCuts::BadRunList[i])
+      return kFALSE;
   }
-  return kFALSE;
+  return kTRUE;
   // if(TMath::Sqrt(TMath::Power(Vx-StMyCuts::VrCen[0], 2.)+TMath::Power(Vy-StMyCuts::VrCen[1],
   // 2.))>=StMyCuts::VrCut) 	return kFALSE;
 }
