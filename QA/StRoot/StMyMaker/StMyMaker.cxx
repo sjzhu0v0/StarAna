@@ -670,16 +670,16 @@ const Bool_t StMyMaker::isGoodEvent() const {
   const Double_t Vy = mEvent->primaryVertex().y();
   const Double_t Vz = mEvent->primaryVertex().z();
   LOG_INFO << "Vx = " << Vx << ", Vy = " << Vy << ", Vz = " << Vz << endm;
-  if (TMath::Abs(Vx) < 1.e-5 && TMath::Abs(Vy) < 1.e-5 &&
-      TMath::Abs(Vz) < 1.e-5)
-    return kFALSE;
-  if (Vz <= StMyCuts::VzCut[0] || Vz >= StMyCuts::VzCut[1])
-    return kFALSE;
-  for (int i; i < StMyCuts::n_badrun; i++) {
-    if (mRunIndex == StMyCuts::BadRunList[i])
-      return kFALSE;
-  }
-  return kTRUE;
+  // if (TMath::Abs(Vx) < 1.e-5 && TMath::Abs(Vy) < 1.e-5 &&
+  //     TMath::Abs(Vz) < 1.e-5)
+  //   return kFALSE;
+  // if (Vz <= StMyCuts::VzCut[0] || Vz >= StMyCuts::VzCut[1])
+  //   return kFALSE;
+  // for (int i; i < StMyCuts::n_badrun; i++) {
+  //   if (mRunIndex == StMyCuts::BadRunList[i])
+  //     return kFALSE;
+  // }
+  // return kTRUE;
   // if(TMath::Sqrt(TMath::Power(Vx-StMyCuts::VrCen[0], 2.)+TMath::Power(Vy-StMyCuts::VrCen[1],
   // 2.))>=StMyCuts::VrCut) 	return kFALSE;
 }
