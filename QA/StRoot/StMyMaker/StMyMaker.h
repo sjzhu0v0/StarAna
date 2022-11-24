@@ -66,6 +66,7 @@ private:
   Int_t mRefMult_Minitree;
   Int_t mRefMult3_Minitree;
   Int_t mNTracks_Minitree;
+  Int_t nNBTOF_Matched_Minitree;
 
 // Track Level
   Float_t mMom_Minitree[3][1000];

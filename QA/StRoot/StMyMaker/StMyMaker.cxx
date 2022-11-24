@@ -250,7 +250,7 @@ Int_t StMyMaker::Init() {
                              nRunIndices, -0.5, nRunIndices - 0.5);
 
 #ifdef MINI_TREE
-  mOutTree = new TTree("TrackInfo", "TrackInfo");
+  mOutTree = new TTree("Event", "Event");
 
   mOutTree->Branch("Vz", &mVz_Minitree, "Vz/F");
   mOutTree->Branch("Vzvpd", &mVzvpd_Minitree, "Vzvpd/F");
@@ -258,6 +258,7 @@ Int_t StMyMaker::Init() {
   mOutTree->Branch("RefMult", &mRefMult_Minitree, "RefMult/I");
   mOutTree->Branch("RefMult3", &mRefMult3_Minitree, "RefMult3/I");
   mOutTree->Branch("NTracks", &mNTracks_Minitree, "NTracks/I");
+  mOutTree->Branch("NBTofMatched", &nNBTOF_Matched_Minitree, "NTracksTof/I");
 
   mOutTree->Branch("Mom", mMom_Minitree, "Mom[3][NTracks]]/F");
   mOutTree->Branch("Charge", mCharge_Minitree, "Charge[NTracks]/S");
@@ -265,8 +266,8 @@ Int_t StMyMaker::Init() {
                    "NSigmaProton[NTracks]/F");
   mOutTree->Branch("NSigmaKaon", mNSigmaKaon_Minitree, "NSigmaKaon[NTracks]/F");
   mOutTree->Branch("NSigmaPion", mNSigmaPion_Minitree, "NSigmaPion[NTracks]/F");
-  mOutTree->Branch("BTofM2", mBTofM2_Minitree, "BTofM2[NTracks]/F");
-  mOutTree->Branch("1oBeta", m1oBeta_Minitree, "1oBeta[NTracks]/F");
+  mOutTree->Branch("BTofM2", mBTofM2_Minitree, "BTofM2[NBTofMatched]/F");
+  mOutTree->Branch("1oBeta", m1oBeta_Minitree, "1oBeta[NBTofMatched]/F");
 
 #endif
   return kStOK;
@@ -471,13 +472,11 @@ const Int_t StMyMaker::MakeEvent() {
 
 #ifdef MINI_TREE
   mNTracks_Minitree = 0;
+  nNBTOF_Matched_Minitree = 0;
 #endif
   for (Int_t it = 0; it < nTracks; it++) {
     MakeTrack(it);
   }
-#ifdef MINI_TREE
-  mOutTree->Fill();
-#endif
 
   hnptracks->Fill(mNPTracks);
   hnntracks->Fill(mNNTracks);
@@ -504,6 +503,15 @@ const Int_t StMyMaker::MakeEvent() {
   pq1ytpc->Fill(mRunIndex, mQ1yTpc);
   pq2xtpc->Fill(mRunIndex, mQ2xTpc);
   pq2ytpc->Fill(mRunIndex, mQ2yTpc);
+#ifdef MINI_TREE
+  mVz_Minitree = PrimaryVertex.Z();
+  mVzvpd_Minitree = mEvent->vzVpd();
+  mZdcX_Minitree = mEvent->ZDCx();
+  mRefMult_Minitree = mEvent->refMult();
+  mRefMult3_Minitree = mEvent->refMult3();
+  mNTracks_Minitree = mNPTracks;
+  mOutTree->Fill();
+#endif
 
   return kStOK;
 }
@@ -587,6 +595,11 @@ const Int_t StMyMaker::MakeTrack(const Int_t it) {
     pbtof1obeta->Fill(mRunIndex, 1. / BTofBeta);
     pbtofylocal->Fill(mRunIndex, mBTofPidTraits->btofYLocal());
     pbtofzlocal->Fill(mRunIndex, mBTofPidTraits->btofZLocal());
+#ifdef MINI_TREE
+    mBTofM2_Minitree[nNBTOF_Matched_Minitree] = BTofM2;
+    m1oBeta_Minitree[nNBTOF_Matched_Minitree] = 1. / BTofBeta;
+    nNBTOF_Matched_Minitree++;
+#endif
   }
 
   if (mTrack->charge() > 0) {
@@ -628,8 +641,8 @@ const Int_t StMyMaker::MakeTrack(const Int_t it) {
   mNSigmaProton_Minitree[mNTracks_Minitree] = mTrack->nSigmaProton();
   mNSigmaKaon_Minitree[mNTracks_Minitree] = mTrack->nSigmaKaon();
   mNSigmaPion_Minitree[mNTracks_Minitree] = mTrack->nSigmaPion();
-  mBTofM2_Minitree[mNTracks_Minitree] = BTofM2;
-  m1oBeta_Minitree[mNTracks_Minitree] = 1. / BTofBeta;
+
+  mNTracks_Minitree++;
 #endif
   return kStOK;
 }
