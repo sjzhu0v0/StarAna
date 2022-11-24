@@ -15,6 +15,7 @@ using namespace std;
 class StChain;
 class StPicoDstMaker;
 class StMyMaker;
+class StStrangeMuDstMaker;
 
 void readPicoDst(const Char_t *const inputFile = "test.list",
                  const Char_t *const outputFile = "test.root",
@@ -62,6 +63,10 @@ void readPicoDst(const Char_t *const inputFile = "test.list",
   gSystem->Load("St_db_Maker");
   gSystem->Load("StPicoEvent");
   gSystem->Load("StPicoDstMaker");
+  gSystem->Load("StiSsd");
+  gSystem->Load("StSsdDaqMaker");
+  gSystem->Load("StSsdDbMaker");
+  gSystem->Load("StSsdUtil");
 
   gSystem->Load("StMyMaker");
 
