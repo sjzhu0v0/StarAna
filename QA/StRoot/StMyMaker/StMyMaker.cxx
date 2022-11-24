@@ -52,7 +52,7 @@ Int_t StMyMaker::Init() {
 
   const Int_t nRunIndices = StMyCuts::RunIdIndex.size();
 
-  hnevents = new TH1D("hnevents", "", 2, -0.5, 1.5);
+  hnevents = new TH1D("hnevents", "", 2, -0.5, 2.5);
   hvxvy = new TH2F("hvxvy", ";#it{V}_{#it{x}} (cm);#it{V}_{#it{y}} (cm)", 100,
                    -3., 3., 100, -2., 2.);
   hvz = new TH1F("hvz", ";#it{V}_{#it{z}} (cm);#it{N}_{events}", 80, -100, 100);
