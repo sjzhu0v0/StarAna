@@ -426,83 +426,83 @@ const Int_t StMyMaker::MakeEvent() {
     return kStOK;
   }
 
-//   mRunIndex = StMyCuts::RunIdIndex.at(mEvent->runId());
-//   const TVector3 PrimaryVertex(mEvent->primaryVertex().x(),
-//                                mEvent->primaryVertex().y(),
-//                                mEvent->primaryVertex().z());
+  //   mRunIndex = StMyCuts::RunIdIndex.at(mEvent->runId());
+  //   const TVector3 PrimaryVertex(mEvent->primaryVertex().x(),
+  //                                mEvent->primaryVertex().y(),
+  //                                mEvent->primaryVertex().z());
 
-//   hnevents->Fill(3.);
-//   hvxvy->Fill(PrimaryVertex.X(), PrimaryVertex.Y());
-//   hvz->Fill(PrimaryVertex.Z());
-//   hvzvzvpd->Fill(PrimaryVertex.Z(), mEvent->vzVpd());
-//   hnvpdhitseast->Fill(mEvent->nVpdHitsEast());
-//   hnvpdhitswest->Fill(mEvent->nVpdHitsWest());
-//   hzdcx->Fill(mEvent->ZDCx());
-//   hrefmult->Fill(mEvent->refMult());
-//   hrefmult2->Fill(mEvent->refMult2());
-//   hrefmult3->Fill(mEvent->refMult3());
-//   hrefmult4->Fill(mEvent->refMult4());
-//   hgrefmult->Fill(mEvent->grefMult());
-//   hbtofmatchmult->Fill(mEvent->nBTOFMatch());
-//   hbtoftraymult->Fill(mEvent->btofTrayMultiplicity());
+  //   hnevents->Fill(3.);
+  //   hvxvy->Fill(PrimaryVertex.X(), PrimaryVertex.Y());
+  //   hvz->Fill(PrimaryVertex.Z());
+  //   hvzvzvpd->Fill(PrimaryVertex.Z(), mEvent->vzVpd());
+  //   hnvpdhitseast->Fill(mEvent->nVpdHitsEast());
+  //   hnvpdhitswest->Fill(mEvent->nVpdHitsWest());
+  //   hzdcx->Fill(mEvent->ZDCx());
+  //   hrefmult->Fill(mEvent->refMult());
+  //   hrefmult2->Fill(mEvent->refMult2());
+  //   hrefmult3->Fill(mEvent->refMult3());
+  //   hrefmult4->Fill(mEvent->refMult4());
+  //   hgrefmult->Fill(mEvent->grefMult());
+  //   hbtofmatchmult->Fill(mEvent->nBTOFMatch());
+  //   hbtoftraymult->Fill(mEvent->btofTrayMultiplicity());
 
-//   pvx->Fill(mRunIndex, PrimaryVertex.X());
-//   pvy->Fill(mRunIndex, PrimaryVertex.Y());
-//   pvz->Fill(mRunIndex, PrimaryVertex.Z());
-//   pvr->Fill(mRunIndex, TMath::Sqrt(TMath::Power(PrimaryVertex.X(), 2.) +
-//                                    TMath::Power(PrimaryVertex.Y(), 2.)));
-//   pvzmvzvpd->Fill(mRunIndex, PrimaryVertex.Z() - mEvent->vzVpd());
-//   pnvpdhitseast->Fill(mRunIndex, mEvent->nVpdHitsEast());
-//   pnvpdhitswest->Fill(mRunIndex, mEvent->nVpdHitsWest());
-//   pzdcx->Fill(mRunIndex, mEvent->ZDCx());
-//   prefmult->Fill(mRunIndex, mEvent->refMult());
-//   prefmult2->Fill(mRunIndex, mEvent->refMult2());
-//   prefmult3->Fill(mRunIndex, mEvent->refMult3());
-//   prefmult4->Fill(mRunIndex, mEvent->refMult4());
-//   pgrefmult->Fill(mRunIndex, mEvent->grefMult());
-//   pbtofmatchmult->Fill(mRunIndex, mEvent->nBTOFMatch());
-//   pbtoftraymult->Fill(mRunIndex, mEvent->btofTrayMultiplicity());
+  //   pvx->Fill(mRunIndex, PrimaryVertex.X());
+  //   pvy->Fill(mRunIndex, PrimaryVertex.Y());
+  //   pvz->Fill(mRunIndex, PrimaryVertex.Z());
+  //   pvr->Fill(mRunIndex, TMath::Sqrt(TMath::Power(PrimaryVertex.X(), 2.) +
+  //                                    TMath::Power(PrimaryVertex.Y(), 2.)));
+  //   pvzmvzvpd->Fill(mRunIndex, PrimaryVertex.Z() - mEvent->vzVpd());
+  //   pnvpdhitseast->Fill(mRunIndex, mEvent->nVpdHitsEast());
+  //   pnvpdhitswest->Fill(mRunIndex, mEvent->nVpdHitsWest());
+  //   pzdcx->Fill(mRunIndex, mEvent->ZDCx());
+  //   prefmult->Fill(mRunIndex, mEvent->refMult());
+  //   prefmult2->Fill(mRunIndex, mEvent->refMult2());
+  //   prefmult3->Fill(mRunIndex, mEvent->refMult3());
+  //   prefmult4->Fill(mRunIndex, mEvent->refMult4());
+  //   pgrefmult->Fill(mRunIndex, mEvent->grefMult());
+  //   pbtofmatchmult->Fill(mRunIndex, mEvent->nBTOFMatch());
+  //   pbtoftraymult->Fill(mRunIndex, mEvent->btofTrayMultiplicity());
 
-//   mNPTracks = mNNTracks = mNElectronP = mNElectronM = mNPionP = mNPionM =
-//       mNKaonP = mNKaonM = mNProtonP = mNProtonM = 0;
-//   mQ1xTpc = mQ1yTpc = mQ2xTpc = mQ2yTpc = 0.;
-//   const Int_t nTracks = mPicoDst->numberOfTracks();
+  //   mNPTracks = mNNTracks = mNElectronP = mNElectronM = mNPionP = mNPionM =
+  //       mNKaonP = mNKaonM = mNProtonP = mNProtonM = 0;
+  //   mQ1xTpc = mQ1yTpc = mQ2xTpc = mQ2yTpc = 0.;
+  //   const Int_t nTracks = mPicoDst->numberOfTracks();
 
-// #ifdef MINI_TREE
-//   mNTracks_Minitree = 0;
-// #endif
-//   for (Int_t it = 0; it < nTracks; it++) {
-//     MakeTrack(it);
-//   }
-// #ifdef MINI_TREE
-//   mOutTree->Fill();
-// #endif
+  // #ifdef MINI_TREE
+  //   mNTracks_Minitree = 0;
+  // #endif
+  //   for (Int_t it = 0; it < nTracks; it++) {
+  //     MakeTrack(it);
+  //   }
+  // #ifdef MINI_TREE
+  //   mOutTree->Fill();
+  // #endif
 
-//   hnptracks->Fill(mNPTracks);
-//   hnntracks->Fill(mNNTracks);
-//   hnelectronp->Fill(mNElectronP);
-//   hnelectronm->Fill(mNElectronM);
-//   hnpionp->Fill(mNPionP);
-//   hnpionm->Fill(mNPionM);
-//   hnkaonp->Fill(mNKaonP);
-//   hnkaonm->Fill(mNKaonM);
-//   hnprotonp->Fill(mNProtonP);
-//   hnprotonm->Fill(mNProtonM);
+  //   hnptracks->Fill(mNPTracks);
+  //   hnntracks->Fill(mNNTracks);
+  //   hnelectronp->Fill(mNElectronP);
+  //   hnelectronm->Fill(mNElectronM);
+  //   hnpionp->Fill(mNPionP);
+  //   hnpionm->Fill(mNPionM);
+  //   hnkaonp->Fill(mNKaonP);
+  //   hnkaonm->Fill(mNKaonM);
+  //   hnprotonp->Fill(mNProtonP);
+  //   hnprotonm->Fill(mNProtonM);
 
-//   pnptracks->Fill(mRunIndex, mNPTracks);
-//   pnntracks->Fill(mRunIndex, mNNTracks);
-//   pnelectronp->Fill(mRunIndex, mNElectronP);
-//   pnelectronm->Fill(mRunIndex, mNElectronM);
-//   pnpionp->Fill(mRunIndex, mNPionP);
-//   pnpionm->Fill(mRunIndex, mNPionM);
-//   pnkaonp->Fill(mRunIndex, mNKaonP);
-//   pnkaonm->Fill(mRunIndex, mNKaonM);
-//   pnprotonp->Fill(mRunIndex, mNProtonP);
-//   pnprotonm->Fill(mRunIndex, mNProtonM);
-//   pq1xtpc->Fill(mRunIndex, mQ1xTpc);
-//   pq1ytpc->Fill(mRunIndex, mQ1yTpc);
-//   pq2xtpc->Fill(mRunIndex, mQ2xTpc);
-//   pq2ytpc->Fill(mRunIndex, mQ2yTpc);
+  //   pnptracks->Fill(mRunIndex, mNPTracks);
+  //   pnntracks->Fill(mRunIndex, mNNTracks);
+  //   pnelectronp->Fill(mRunIndex, mNElectronP);
+  //   pnelectronm->Fill(mRunIndex, mNElectronM);
+  //   pnpionp->Fill(mRunIndex, mNPionP);
+  //   pnpionm->Fill(mRunIndex, mNPionM);
+  //   pnkaonp->Fill(mRunIndex, mNKaonP);
+  //   pnkaonm->Fill(mRunIndex, mNKaonM);
+  //   pnprotonp->Fill(mRunIndex, mNProtonP);
+  //   pnprotonm->Fill(mRunIndex, mNProtonM);
+  //   pq1xtpc->Fill(mRunIndex, mQ1xTpc);
+  //   pq1ytpc->Fill(mRunIndex, mQ1yTpc);
+  //   pq2xtpc->Fill(mRunIndex, mQ2xTpc);
+  //   pq2ytpc->Fill(mRunIndex, mQ2yTpc);
 
   return kStOK;
 }
@@ -670,16 +670,15 @@ const Bool_t StMyMaker::isGoodEvent() const {
   const Double_t Vy = mEvent->primaryVertex().y();
   const Double_t Vz = mEvent->primaryVertex().z();
   LOG_INFO << "Vx = " << Vx << ", Vy = " << Vy << ", Vz = " << Vz << endm;
-  // if (TMath::Abs(Vx) < 1.e-5 && TMath::Abs(Vy) < 1.e-5 &&
-  //     TMath::Abs(Vz) < 1.e-5)
-  //   return kFALSE;
-  // if (Vz <= StMyCuts::VzCut[0] || Vz >= StMyCuts::VzCut[1])
-  //   return kFALSE;
-  // for (int i; i < StMyCuts::n_badrun; i++) {
-  //   if (mRunIndex == StMyCuts::BadRunList[i])
-  //     return kFALSE;
-  // }
-  // return kTRUE;
+  if (TMath::Abs(Vx) < 1.e-5 && TMath::Abs(Vy) < 1.e-5 &&
+      TMath::Abs(Vz) < 1.e-5)
+    return kFALSE;
+  if (Vz <= StMyCuts::VzCut[0] || Vz >= StMyCuts::VzCut[1])
+    return kFALSE;
+  for (int i; i < StMyCuts::n_badrun; i++)
+    if (mRunIndex == StMyCuts::BadRunList[i])
+      return kFALSE;
+  return kTRUE;
   // if(TMath::Sqrt(TMath::Power(Vx-StMyCuts::VrCen[0], 2.)+TMath::Power(Vy-StMyCuts::VrCen[1],
   // 2.))>=StMyCuts::VrCut) 	return kFALSE;
 }
