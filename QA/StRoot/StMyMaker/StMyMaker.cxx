@@ -267,8 +267,8 @@ Int_t StMyMaker::Init() {
                    "NSigmaProton[NTracks]/F");
   mOutTree->Branch("NSigmaKaon", mNSigmaKaon_Minitree, "NSigmaKaon[NTracks]/F");
   mOutTree->Branch("NSigmaPion", mNSigmaPion_Minitree, "NSigmaPion[NTracks]/F");
-  mOutTree->Branch("BTofM2", mBTofM2_Minitree, "BTofM2[NBTofMatched]/F");
-  mOutTree->Branch("1oBeta", m1oBeta_Minitree, "1oBeta[NBTofMatched]/F");
+  mOutTree->Branch("BTofM2", mBTofM2_Minitree, "BTofM2[NTracks]/F");
+  mOutTree->Branch("1oBeta", m1oBeta_Minitree, "1oBeta[NTracks]/F");
 
 #endif
   return kStOK;
@@ -595,8 +595,6 @@ const Int_t StMyMaker::MakeTrack(const Int_t it) {
     pbtofylocal->Fill(mRunIndex, mBTofPidTraits->btofYLocal());
     pbtofzlocal->Fill(mRunIndex, mBTofPidTraits->btofZLocal());
 #ifdef MINI_TREE
-    mBTofM2_Minitree[nNBTOF_Matched_Minitree] = BTofM2;
-    m1oBeta_Minitree[nNBTOF_Matched_Minitree] = 1. / BTofBeta;
     nNBTOF_Matched_Minitree++;
 #endif
   }
@@ -640,7 +638,12 @@ const Int_t StMyMaker::MakeTrack(const Int_t it) {
   mNSigmaProton_Minitree[mNTracks_Minitree] = mTrack->nSigmaProton();
   mNSigmaKaon_Minitree[mNTracks_Minitree] = mTrack->nSigmaKaon();
   mNSigmaPion_Minitree[mNTracks_Minitree] = mTrack->nSigmaPion();
-
+  mBTofM2_Minitree[mNTracks_Minitree] = -100;
+  m1oBeta_Minitree[mNTracks_Minitree] = -100;
+  if (!(BTofBeta < 1.e-5)) {
+    mBTofM2_Minitree[mNTracks_Minitree] = BTofM2;
+    m1oBeta_Minitree[mNTracks_Minitree] = 1. / BTofBeta;
+  }
   mNTracks_Minitree++;
 #endif
   return kStOK;
