@@ -258,7 +258,7 @@ Int_t StMyMaker::Init() {
   mOutTree->Branch("RefMult", &mRefMult_Minitree, "RefMult/I");
   mOutTree->Branch("RefMult3", &mRefMult3_Minitree, "RefMult3/I");
   mOutTree->Branch("NTracks", &mNTracks_Minitree, "NTracks/I");
-  mOutTree->Branch("NBTofMatched", &nNBTOF_Matched_Minitree, "NTracksTof/I");
+  mOutTree->Branch("NBTofMatched", &nNBTOF_Matched_Minitree, "NBTofMatched/I");
 
   mOutTree->Branch("Mom", mMom_Minitree, "Mom[3][NTracks]]/F");
   mOutTree->Branch("Charge", mCharge_Minitree, "Charge[NTracks]/S");
