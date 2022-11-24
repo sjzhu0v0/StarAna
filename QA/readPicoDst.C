@@ -82,7 +82,7 @@ void readPicoDst(const Char_t *const inputFile = "test.list",
   cout << nEntries << " events in chain, " << nEvents << " will be read."
        << endl;
   for (Long64_t ie = 0; ie < nEvents; ie++) {
-    if (ie % 100000 == 0) {
+    if (ie % 10000 == 0) {
       cout << "Working on eventNumber " << ie << ". Time:";
       time_t t = time(NULL);
       char ch[64] = {0};
@@ -94,6 +94,8 @@ void readPicoDst(const Char_t *const inputFile = "test.list",
     chain->Clear();
     chain->Make();
   }
+  
+  LOG_INFO << myMaker->hnevents->GetBinContent(3) << "events analysised" << endm; 
   // chain->EventLoop(nEvents);
   chain->Finish();
   delete chain;
