@@ -675,7 +675,7 @@ const Bool_t StMyMaker::isGoodEvent() const {
     return kFALSE;
   if (Vz <= StMyCuts::VzCut[0] || Vz >= StMyCuts::VzCut[1])
     return kFALSE;
-  for (int i; i < StMyCuts::NBadRun; i++)
+  for (int i = 0; i < StMyCuts::NBadRun; i++)
     if (mEvent->runId() == StMyCuts::BadRunList[i])
       return kFALSE;
   return kTRUE;
