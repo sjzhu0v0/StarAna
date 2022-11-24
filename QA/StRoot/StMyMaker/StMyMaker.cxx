@@ -430,8 +430,8 @@ const Int_t StMyMaker::MakeEvent() {
   const TVector3 PrimaryVertex(mEvent->primaryVertex().x(),
                                mEvent->primaryVertex().y(),
                                mEvent->primaryVertex().z());
-  LOG_INFO << "PrimaryVertex: " << PrimaryVertex.X() << " " << PrimaryVertex.Y()
-           << " " << PrimaryVertex.Z() << endm;
+  cout << "PrimaryVertex: " << PrimaryVertex.X() << " " << PrimaryVertex.Y()
+           << " " << PrimaryVertex.Z() << endl;
 
   hnevents->Fill(3.);
   hvxvy->Fill(PrimaryVertex.X(), PrimaryVertex.Y());
