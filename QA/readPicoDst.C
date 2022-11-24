@@ -95,7 +95,7 @@ void readPicoDst(const Char_t *const inputFile = "test.list",
     chain->Make();
   }
   
-  LOG_INFO << myMaker->hnevents->GetBinContent(3) << "events analysised" << endm; 
+  // LOG_INFO << myMaker->hnevents->GetBinContent(3) << "events analysised" << endm; 
   // chain->EventLoop(nEvents);
   chain->Finish();
   delete chain;
