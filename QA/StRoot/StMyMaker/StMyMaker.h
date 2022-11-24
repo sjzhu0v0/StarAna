@@ -22,6 +22,7 @@ class StPicoDst;
 class StPicoDstMaker;
 class StPicoEvent;
 class StPicoTrack;
+class StStrangeMuDstMaker;
 
 class StMyMaker : public StMaker {
 public:
