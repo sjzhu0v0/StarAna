@@ -63,7 +63,8 @@ Int_t StMyMaker::Init() {
                            -0.5, 19.5);
   hnvpdhitswest = new TH1F("hnvpdhitswest", ";nVpdHitsWest;#it{N}_{events}", 20,
                            -0.5, 19.5);
-  hzdcx = new TH1F("hzdcx", ";ZDCx (Hz);#it{N}_{events}", 4000, 5999.5, 9999.5);
+  hzdcx =
+      new TH1F("hzdcx", ";ZDCx (Hz);#it{N}_{events}", 1200, 13599.5, 14799.5);
   hrefmult = new TH1F("hrefmult", ";RefMult;#it{N}_{events}", 80, -0.5, 79.5);
   hrefmult2 =
       new TH1F("hrefmult2", ";RefMult2;#it{N}_{events}", 80, -0.5, 79.5);
@@ -431,8 +432,6 @@ const Int_t StMyMaker::MakeEvent() {
   const TVector3 PrimaryVertex(mEvent->primaryVertex().x(),
                                mEvent->primaryVertex().y(),
                                mEvent->primaryVertex().z());
-  // cout << "PrimaryVertex: " << PrimaryVertex.X() << " " << PrimaryVertex.Y()
-  //      << " " << PrimaryVertex.Z() << endl;
 
   hvxvy->Fill(PrimaryVertex.X(), PrimaryVertex.Y());
   hvz->Fill(PrimaryVertex.Z());
