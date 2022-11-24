@@ -417,12 +417,11 @@ const Int_t StMyMaker::MakeEvent() {
   }
   hnevents->Fill(0.);
 
-  if (!isGoodTrigger()) {
+  if (!isGoodEvent()) {
     hnevents->Fill(1.);
     return kStOK;
   }
-
-  if (!isGoodEvent()) {
+  if (!isGoodTrigger()) {
     hnevents->Fill(2.);
     return kStOK;
   }
