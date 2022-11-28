@@ -261,7 +261,9 @@ Int_t StMyMaker::Init() {
   mOutTree->Branch("NTracks", &mNTracks_Minitree, "NTracks/I");
   mOutTree->Branch("NBTofMatched", &nNBTOF_Matched_Minitree, "NBTofMatched/I");
 
-  mOutTree->Branch("Mom", mMom_Minitree, "Mom[3][NTracks]/F");
+  mOutTree->Branch("MomX", mMomX_Minitree, "MomX[NTracks]/F");
+  mOutTree->Branch("MomY", mMomY_Minitree, "MomY[NTracks]/F");
+  mOutTree->Branch("MomZ", mMomZ_Minitree, "MomZ[NTracks]/F");
   mOutTree->Branch("Charge", mCharge_Minitree, "Charge[NTracks]/S");
   mOutTree->Branch("NSigmaProton", mNSigmaProton_Minitree,
                    "NSigmaProton[NTracks]/F");
@@ -532,7 +534,7 @@ const Int_t StMyMaker::MakeTrack(const Int_t it) {
 
   const TVector3 Dca = mTrack->gDCA(mEvent->primaryVertex());
   const TVector3 PMom = mTrack->pMom();
-  
+
   const Double_t SDcaXY = sDcaxy_cal(PMom, Dca);
   const Double_t PPt = PMom.Pt();
   const Double_t PPhi = PMom.Phi();
@@ -632,9 +634,9 @@ const Int_t StMyMaker::MakeTrack(const Int_t it) {
     mQ2yTpc += Weight * TMath::Sin(2. * PPhi);
   }
 #ifdef MINI_TREE
-  mMom_Minitree[0][mNTracks_Minitree] = PMom.Px();
-  mMom_Minitree[1][mNTracks_Minitree] = PMom.Py();
-  mMom_Minitree[2][mNTracks_Minitree] = PMom.Pz();
+  mMomX_Minitree[mNTracks_Minitree] = PMom.Px();
+  mMomY_Minitree[mNTracks_Minitree] = PMom.Py();
+  mMomZ_Minitree[mNTracks_Minitree] = PMom.Pz();
   mCharge_Minitree[mNTracks_Minitree] = mTrack->charge();
   mNSigmaProton_Minitree[mNTracks_Minitree] = mTrack->nSigmaProton();
   mNSigmaKaon_Minitree[mNTracks_Minitree] = mTrack->nSigmaKaon();
@@ -693,9 +695,9 @@ const Bool_t StMyMaker::isGoodEvent() const {
     return kFALSE;
   if (Vz <= StMyCuts::VzCut[0] || Vz >= StMyCuts::VzCut[1])
     return kFALSE;
-  if (abs(Vz-Vzvpd) > StMyCuts::DeltaVzVzvpd)
+  if (abs(Vz - Vzvpd) > StMyCuts::DeltaVzVzvpd)
     return kFALSE;
-  if (sqrt(Vx*Vx+Vy*Vy) > StMyCuts::VrCut)
+  if (sqrt(Vx * Vx + Vy * Vy) > StMyCuts::VrCut)
     return kFALSE;
   for (int i = 0; i < StMyCuts::NBadRun; i++)
     if (mEvent->runId() == StMyCuts::BadRunList[i])

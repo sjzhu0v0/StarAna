@@ -69,7 +69,9 @@ private:
   Int_t nNBTOF_Matched_Minitree;
 
 // Track Level
-  Float_t mMom_Minitree[3][1000];
+  Float_t mMomX_Minitree[1000];
+  Float_t mMomY_Minitree[1000];
+  Float_t mMomZ_Minitree[1000];
   Short_t mCharge_Minitree[1000];
   Float_t mNSigmaProton_Minitree[1000];
   Float_t mNSigmaKaon_Minitree[1000];
