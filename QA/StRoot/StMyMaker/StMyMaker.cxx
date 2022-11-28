@@ -261,14 +261,14 @@ Int_t StMyMaker::Init() {
   mOutTree->Branch("NTracks", &mNTracks_Minitree, "NTracks/I");
   mOutTree->Branch("NBTofMatched", &nNBTOF_Matched_Minitree, "NBTofMatched/I");
 
-  mOutTree->Branch("Mom", mMom_Minitree, "Mom[3][NTracks]]/F");
+  mOutTree->Branch("Mom", mMom_Minitree, "Mom[3][NTracks]/F");
   mOutTree->Branch("Charge", mCharge_Minitree, "Charge[NTracks]/S");
   mOutTree->Branch("NSigmaProton", mNSigmaProton_Minitree,
                    "NSigmaProton[NTracks]/F");
   mOutTree->Branch("NSigmaKaon", mNSigmaKaon_Minitree, "NSigmaKaon[NTracks]/F");
   mOutTree->Branch("NSigmaPion", mNSigmaPion_Minitree, "NSigmaPion[NTracks]/F");
   mOutTree->Branch("BTofM2", mBTofM2_Minitree, "BTofM2[NTracks]/F");
-  mOutTree->Branch("1oBeta", m1oBeta_Minitree, "1oBeta[NTracks]/F");
+  mOutTree->Branch("BTof1oBeta", m1oBeta_Minitree, "BTof1oBeta[NTracks]/F");
 
 #endif
   return kStOK;
@@ -532,6 +532,7 @@ const Int_t StMyMaker::MakeTrack(const Int_t it) {
 
   const TVector3 Dca = mTrack->gDCA(mEvent->primaryVertex());
   const TVector3 PMom = mTrack->pMom();
+  
   const Double_t SDcaXY = sDcaxy_cal(PMom, Dca);
   const Double_t PPt = PMom.Pt();
   const Double_t PPhi = PMom.Phi();
@@ -685,11 +686,16 @@ const Bool_t StMyMaker::isGoodEvent() const {
   const Double_t Vx = mEvent->primaryVertex().x();
   const Double_t Vy = mEvent->primaryVertex().y();
   const Double_t Vz = mEvent->primaryVertex().z();
+  const Double_t Vzvpd = mEvent->vzVpd();
   // LOG_INFO << "Vx = " << Vx << ", Vy = " << Vy << ", Vz = " << Vz << endm;
   if (TMath::Abs(Vx) < 1.e-5 && TMath::Abs(Vy) < 1.e-5 &&
       TMath::Abs(Vz) < 1.e-5)
     return kFALSE;
   if (Vz <= StMyCuts::VzCut[0] || Vz >= StMyCuts::VzCut[1])
+    return kFALSE;
+  if (abs(Vz-Vzvpd) > StMyCuts::DeltaVzVzvpd)
+    return kFALSE;
+  if (sqrt(Vx*Vx+Vy*Vy) > StMyCuts::VrCut)
     return kFALSE;
   for (int i = 0; i < StMyCuts::NBadRun; i++)
     if (mEvent->runId() == StMyCuts::BadRunList[i])
